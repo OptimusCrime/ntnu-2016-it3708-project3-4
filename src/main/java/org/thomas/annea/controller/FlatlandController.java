@@ -28,7 +28,7 @@ import org.thomas.annea.tools.settings.AbstractSettings;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class FlatlandController implements Initializable {
+public class FlatlandController extends AbstractController implements Initializable {
 
     // JavaFX stuff
     @FXML private Pane main;
@@ -51,9 +51,6 @@ public class FlatlandController implements Initializable {
     // Length of each tick
     private static int tickLength = 200;
 
-    // Reference to the settings
-    private AbstractSettings settings;
-
     // Reference to the solver
     private FlatlandSolver solver;
 
@@ -62,7 +59,6 @@ public class FlatlandController implements Initializable {
 
     // For the timeline
     private Timeline timeline;
-    private boolean running;
 
     /**
      * Constructor
@@ -70,11 +66,10 @@ public class FlatlandController implements Initializable {
      */
 
     public FlatlandController(AbstractSettings s) {
-        // Store reference to settings
-        settings = s;
+        super(s);
 
-        // Set running to false
-        running = false;
+        // Set reference afterwards (because hax)
+        setReference(this);
     }
 
     /**
@@ -347,6 +342,7 @@ public class FlatlandController implements Initializable {
         // Load the new scenario
         loadScenario(solver.getFlatland().getScenarios().size() - 1);
     }
+
 
     /**
      * Toggle running state

@@ -2,7 +2,7 @@ package org.thomas.annea;
 
 import org.thomas.annea.controller.FlatlandController;
 
-public class FlatlandMain extends AbstractMain {
+public class BeerMain extends AbstractMain {
 
     /**
      * Main function
@@ -10,6 +10,11 @@ public class FlatlandMain extends AbstractMain {
      */
 
     public static void main(String []args) {
+        // Overload abstract main stuff
+        configLoaderIdentifier = "beer";
+        title = "Project 4";
+        fxmlFile = "beer_layout.fxml";
+
         // Parse the config
         parseConfig(args);
 
