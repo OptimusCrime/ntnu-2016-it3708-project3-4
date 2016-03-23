@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Pane id="main" fx:id="main" prefHeight="750.0" prefWidth="750.0" style="-fx-background-color: white;" />
+        <Pane prefHeight="750.0" prefWidth="350.0" style="-fx-background-color: #e0e0e0;">
+            <children>
+                <Label layoutX="10.0" layoutY="14.0" text="Scenario: " />
+                <ChoiceBox id="choiceBoxScenario" fx:id="choiceBoxScenario" layoutX="140.0" layoutY="10.0" prefHeight="27.0" prefWidth="200.0" />
+                <Button id="buttonScenarioNew" fx:id="buttonScenarioNew" layoutX="140.0" layoutY="52.0" mnemonicParsing="false" onMouseClicked="#buttonScenarioNewClicked" prefHeight="27.0" prefWidth="200.0" text="New scenario" />
+
+                <Separator layoutX="0.0" layoutY="94.0" prefHeight="4.0" prefWidth="350.0" />
+
+                <Label layoutX="10.0" layoutY="108.0" text="Refresh rate" />
+                <Slider id="sliderRefreshRate" fx:id="sliderRefreshRate" layoutX="140.0" layoutY="108.0" prefHeight="16.0" prefWidth="205.0" />
+                <Label id="labelRefreshRate" fx:id="labelRefreshRate" layoutX="295.0" layoutY="132.0" text="" />
+                <Label id="labelTimestep" fx:id="labelTimestep" layoutX="45.0" layoutY="163.0" text="1" />
+                <Button id="buttonPlayPause" fx:id="buttonPlayPause" layoutX="140.0" layoutY="160.0" mnemonicParsing="false" onMouseClicked="#buttonPlayPauseClicked" prefHeight="27.0" prefWidth="200.0" text="Pause" />
+
+                <Separator layoutX="0.0" layoutY="202.0" prefHeight="4.0" prefWidth="350.0" />
+
+                <Label layoutX="10.0" layoutY="216.0" text="Food:" />
+                <Label id="labelFood" fx:id="labelFood" layoutX="140.0" layoutY="216.0" text="" />
+                <Label layoutX="10.0" layoutY="247.0" text="Poison:" />
+                <Label id="labelPoison" fx:id="labelPoison" layoutX="140.0" layoutY="247.0" text="" />
+            </children>
+        </Pane>
+    </children>
+</HBox>
