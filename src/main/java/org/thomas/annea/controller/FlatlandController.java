@@ -20,7 +20,7 @@ import org.thomas.annea.ann.Network;
 import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.flatland.Cell;
 import org.thomas.annea.flatland.Scenario;
-import org.thomas.annea.gui.flatland.AbstractGui;
+import org.thomas.annea.gui.flatland.AbstractFlatlandGui;
 import org.thomas.annea.runner.FlatlandProblemRunner;
 import org.thomas.annea.solvers.FlatlandSolver;
 import org.thomas.annea.tools.settings.AbstractSettings;
@@ -142,7 +142,7 @@ public class FlatlandController extends AbstractController implements Initializa
     private void populateGui() {
 
         // Calculate the size for each GUI object
-        AbstractGui.SIZE = (int) ((750 - solver.getFlatland().getSize()) / solver.getFlatland().getSize());
+        AbstractFlatlandGui.SIZE = (int) ((750 - solver.getFlatland().getSize()) / solver.getFlatland().getSize());
 
         // Populate the dropdown
         choiceBoxOptions = FXCollections.observableArrayList();

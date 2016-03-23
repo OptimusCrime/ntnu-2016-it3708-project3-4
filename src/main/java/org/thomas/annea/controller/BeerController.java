@@ -19,7 +19,6 @@ import org.thomas.annea.ann.Network;
 import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.flatland.Cell;
 import org.thomas.annea.flatland.Scenario;
-import org.thomas.annea.gui.flatland.AbstractGui;
 import org.thomas.annea.runner.FlatlandProblemRunner;
 import org.thomas.annea.solvers.FlatlandSolver;
 import org.thomas.annea.tools.settings.AbstractSettings;
@@ -142,27 +141,6 @@ public class BeerController extends AbstractController implements Initializable 
      */
 
     private void populateGui() {
-
-        // Calculate the size for each GUI object
-        AbstractGui.SIZE = (int) ((750 - solver.getFlatland().getSize()) / solver.getFlatland().getSize());
-
-        // Set the items
-        choiceBoxScenario.setItems(choiceBoxOptions);
-
-        // Select the first item in the list
-        choiceBoxScenario.getSelectionModel().selectFirst();
-
-        // Choice box on change
-        choiceBoxScenario.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            public void changed(ObservableValue<? extends Number> ov, Number oldVal, Number newValue) {
-                // Make sure the new value is not the current scenario
-                if (choiceBoxIndex != newValue.intValue()) {
-                    // Load the new scenario
-                    loadScenario(newValue.intValue());
-                }
-            }
-        });
-
         // Set various slider things
         sliderRefreshRate.setMin(100);
         sliderRefreshRate.setMax(1000);
@@ -300,30 +278,6 @@ public class BeerController extends AbstractController implements Initializable 
         // Add the agent
         group.getChildren().add(runner.getAgent().getGui().draw());
     }
-
-    @FXML
-    private void buttonScenarioNewClicked(Event event) {
-        // Create new scenario
-        solver.getFlatland().newScenario();
-
-        // Add to dropdown
-        if (solver.getFlatland().getSettings().getSetting("scenario_mode").equals("static")) {
-            choiceBoxOptions.add("New scenario #" + solver.getFlatland().getScenarios().size());
-        }
-        else {
-            choiceBoxOptions.add("New random scenario #" + solver.getFlatland().getScenarios().size());
-        }
-
-        // Set the items
-        choiceBoxScenario.setItems(choiceBoxOptions);
-
-        // Update selected
-        choiceBoxScenario.getSelectionModel().select(choiceBoxOptions.size() - 1);
-
-        // Load the new scenario
-        loadScenario(solver.getFlatland().getScenarios().size() - 1);
-    }
-
 
     /**
      * Toggle running state
