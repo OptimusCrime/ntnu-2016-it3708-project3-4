@@ -1,6 +1,6 @@
 package org.thomas.annea.flatland;
 
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 public class Flatland {
 
     // Reference to the settings instance
-    private Settings settings;
+    private AbstractSettings settings;
 
     // Number of scenarios and their size
     private int size;
@@ -24,7 +24,7 @@ public class Flatland {
      * @param s Instance of Settings
      */
 
-    public Flatland(Settings s) {
+    public Flatland(AbstractSettings s) {
         // Reference to settings
         settings = s;
 
@@ -32,7 +32,7 @@ public class Flatland {
         scenarios = new ArrayList<>();
     }
 
-    public Settings getSettings() {
+    public AbstractSettings getSettings() {
         return settings;
     }
 

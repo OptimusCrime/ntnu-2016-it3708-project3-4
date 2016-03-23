@@ -2,16 +2,16 @@ package org.thomas.annea.ann;
 
 import org.jblas.DoubleMatrix;
 import org.thomas.annea.ea.gtype.AbstractGType;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.lang.reflect.Method;
 
 public class Network {
 
-    // TODO
-    private Settings settings;
+    // Settings
+    private AbstractSettings settings;
 
-    // TODO
+    // List of layers
     private Layer[] layers;
 
     /**
@@ -19,7 +19,7 @@ public class Network {
      * @param s Instance of settings
      */
 
-    public Network(Settings s) {
+    public Network(AbstractSettings s) {
         settings = s;
     }
 

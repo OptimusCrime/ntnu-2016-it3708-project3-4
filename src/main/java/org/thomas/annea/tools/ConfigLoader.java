@@ -1,5 +1,9 @@
 package org.thomas.annea.tools;
 
+import org.thomas.annea.tools.settings.AbstractSettings;
+import org.thomas.annea.tools.settings.BeerSettings;
+import org.thomas.annea.tools.settings.FlatlandSettings;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -9,14 +13,18 @@ import java.util.List;
 
 public class ConfigLoader {
 
-    private Settings settings;
+    private AbstractSettings settings;
+
+    public ConfigLoader() {
+        this("settings.conf", "Flatland");
+    }
 
     /**
      * Constructor (default file)
      */
 
-    public ConfigLoader() {
-        this("settings.conf");
+    public ConfigLoader(String type) {
+        this("settings.conf", type);
     }
 
     /**
@@ -24,13 +32,19 @@ public class ConfigLoader {
      * @param fileName File to load
      */
 
-    public ConfigLoader(String fileName) {
+    public ConfigLoader(String fileName, String type) {
         // Construct full file path
         String fullPath = System.getProperty("user.dir") + "/" + fileName;
         System.out.println("Trying to load config file: " + fullPath);
 
         // Create new instance of a setting
-        settings = new Settings();
+        if (type.equals("Flatland")) {
+            settings = new FlatlandSettings();
+        }
+        else {
+            settings = new BeerSettings();
+        }
+
 
         // Try to open the file
         try {
@@ -60,7 +74,7 @@ public class ConfigLoader {
      * @return The settings instance
      */
 
-    public Settings getSettings() {
+    public AbstractSettings getSettings() {
         return settings;
     }
 

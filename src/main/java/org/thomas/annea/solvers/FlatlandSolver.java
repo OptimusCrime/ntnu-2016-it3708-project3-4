@@ -6,7 +6,7 @@ import org.thomas.annea.ea.fitness.FlatlandFitness;
 import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.flatland.Flatland;
 
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 public class FlatlandSolver extends AbstractSolver {
 
@@ -22,7 +22,7 @@ public class FlatlandSolver extends AbstractSolver {
      * @param s Instance of settings
      */
 
-    public FlatlandSolver(Settings s) {
+    public FlatlandSolver(AbstractSettings s) {
         // Call the super constructor
         super(s);
 

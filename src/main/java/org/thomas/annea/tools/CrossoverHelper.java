@@ -1,5 +1,7 @@
 package org.thomas.annea.tools;
 
+import org.thomas.annea.tools.settings.AbstractSettings;
+
 import java.util.*;
 
 public class CrossoverHelper {
@@ -10,7 +12,7 @@ public class CrossoverHelper {
      * @return Array of the crossover points
      */
 
-    public static int[] getCrossover(Settings settings) {
+    public static int[] getCrossover(AbstractSettings settings) {
         // Find out how many crossovers we should do
         int numberOfCrossovers = 1;
         if (settings.getNumberOfValues() > 3 && RandomHelper.randomInPercentage(settings.getProbabilityDoubleCrossover())) {

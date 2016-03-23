@@ -14,7 +14,7 @@ import org.thomas.annea.tools.ConfigLoader;
 
 import java.io.IOException;
 
-public class Main extends Application {
+public class FlatlandMain extends Application {
 
     // Reference to the controller
     private static FlatlandController controller;
@@ -41,10 +41,10 @@ public class Main extends Application {
         // Parse the settings
         ConfigLoader config;
         if (args.length > 0) {
-            config = new ConfigLoader(args[0]);
+            config = new ConfigLoader(args[0], "Flatland");
         }
         else {
-            config = new ConfigLoader();
+            config = new ConfigLoader("Flatland");
         }
 
         // Create the controller and supply the settings

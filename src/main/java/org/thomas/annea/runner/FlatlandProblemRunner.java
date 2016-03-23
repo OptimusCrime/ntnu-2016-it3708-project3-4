@@ -4,12 +4,12 @@ import org.jblas.DoubleMatrix;
 import org.thomas.annea.ann.Network;
 import org.thomas.annea.flatland.Agent;
 import org.thomas.annea.flatland.Cell;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 public class FlatlandProblemRunner {
 
     // Reference to the settings
-    private Settings settings;
+    private AbstractSettings settings;
 
     // Various references to stuff we need to run the problem
     private Network ann;
@@ -30,7 +30,7 @@ public class FlatlandProblemRunner {
      * @param s Instance of Settings
      */
 
-    public FlatlandProblemRunner(Settings s) {
+    public FlatlandProblemRunner(AbstractSettings s) {
         // Set reference to settings
         settings = s;
 

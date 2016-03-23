@@ -1,7 +1,7 @@
 package org.thomas.annea.ea.gtype;
 
 import org.thomas.annea.tools.RandomHelper;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.util.Random;
 
@@ -18,7 +18,7 @@ public class FloatGType extends AbstractGType {
      * @param values number of values this G-Type should contain
      */
 
-    public FloatGType(Settings s, int values) {
+    public FloatGType(AbstractSettings s, int values) {
         super(s, values);
 
         // See if we need to calculate the length of the vector here

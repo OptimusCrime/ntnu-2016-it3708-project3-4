@@ -1,18 +1,18 @@
 package org.thomas.annea.solvers;
 
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 public abstract class AbstractSolver {
 
     // Reference to the settings
-    protected Settings settings;
+    protected AbstractSettings settings;
 
     /**
      * Constructor
      * @param s Instance of Settings
      */
 
-    public AbstractSolver(Settings s) {
+    public AbstractSolver(AbstractSettings s) {
         // Store reference to the settings
         settings = s;
     }

@@ -5,14 +5,14 @@ import org.thomas.annea.ea.gtype.BinaryGType;
 import org.thomas.annea.ea.gtype.FloatGType;
 import org.thomas.annea.tools.CrossoverHelper;
 import org.thomas.annea.tools.RandomHelper;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class EA {
 
-    private Settings settings;
+    private AbstractSettings settings;
 
     // For stats
     private double allTimeMaxFitness;
@@ -26,7 +26,7 @@ public class EA {
      * Constructor!
      */
 
-    public EA(Settings s) {
+    public EA(AbstractSettings s) {
         // Set settings
         settings = s;
 

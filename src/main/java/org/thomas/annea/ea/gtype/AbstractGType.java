@@ -4,12 +4,12 @@ import org.thomas.annea.ea.ptype.ASCIIPType;
 import org.thomas.annea.ea.ptype.AbstractPType;
 import org.thomas.annea.ea.ptype.BinaryPType;
 import org.thomas.annea.ea.ptype.FloatPType;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 public abstract class AbstractGType implements Comparable {
 
     // The instance of the settings
-    protected Settings settings;
+    protected AbstractSettings settings;
 
     // The length of this instance
     protected int length;
@@ -29,7 +29,7 @@ public abstract class AbstractGType implements Comparable {
      * @param values number of values this G-Type should contain
      */
 
-    public AbstractGType(Settings s, int values) {
+    public AbstractGType(AbstractSettings s, int values) {
         // Store settings
         settings = s;
 
@@ -117,7 +117,7 @@ public abstract class AbstractGType implements Comparable {
     public AbstractPType getPType() {
         return ptype;
     }
-    public Settings getSettings() {
+    public AbstractSettings getSettings() {
         return settings;
     }
 

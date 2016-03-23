@@ -1,7 +1,7 @@
 package org.thomas.annea.ea.ptype;
 
 import org.thomas.annea.ea.gtype.AbstractGType;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 public abstract class AbstractPType {
 
@@ -12,7 +12,7 @@ public abstract class AbstractPType {
     protected static double[][] possibleValues;
 
     // The settings
-    protected Settings settings;
+    protected AbstractSettings settings;
 
     // Reference to the corresponding G-type
     protected AbstractGType gtype;
@@ -23,7 +23,7 @@ public abstract class AbstractPType {
      * @param p Instance of the G-type
      */
 
-    public AbstractPType(Settings s, AbstractGType p) {
+    public AbstractPType(AbstractSettings s, AbstractGType p) {
         settings = s;
 
         // Check if we have the list of possible values

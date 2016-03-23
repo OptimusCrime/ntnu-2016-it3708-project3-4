@@ -15,6 +15,7 @@ import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+
 import org.thomas.annea.ann.Network;
 import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.flatland.Cell;
@@ -22,7 +23,7 @@ import org.thomas.annea.flatland.Scenario;
 import org.thomas.annea.gui.AbstractGui;
 import org.thomas.annea.runner.FlatlandProblemRunner;
 import org.thomas.annea.solvers.FlatlandSolver;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -51,7 +52,7 @@ public class FlatlandController implements Initializable {
     private static int tickLength = 200;
 
     // Reference to the settings
-    private Settings settings;
+    private AbstractSettings settings;
 
     // Reference to the solver
     private FlatlandSolver solver;
@@ -68,7 +69,7 @@ public class FlatlandController implements Initializable {
      * @param s Instance of Settings
      */
 
-    public FlatlandController(Settings s) {
+    public FlatlandController(AbstractSettings s) {
         // Store reference to settings
         settings = s;
 

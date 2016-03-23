@@ -1,7 +1,7 @@
 package org.thomas.annea.ea.gtype;
 
 import org.thomas.annea.tools.RandomHelper;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.util.BitSet;
 
@@ -15,7 +15,7 @@ public class BinaryGType extends AbstractGType {
      * @param values number of values this G-Type should contain
      */
 
-    public BinaryGType(Settings s, int values) {
+    public BinaryGType(AbstractSettings s, int values) {
         super(s, values);
 
         // Initialize the (empty) BitSet

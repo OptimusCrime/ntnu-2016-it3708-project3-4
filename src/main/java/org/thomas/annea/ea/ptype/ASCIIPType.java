@@ -1,7 +1,7 @@
 package org.thomas.annea.ea.ptype;
 
 import org.thomas.annea.ea.gtype.AbstractGType;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 public class ASCIIPType extends AbstractPType {
 
@@ -16,7 +16,7 @@ public class ASCIIPType extends AbstractPType {
      * @param p Instance of the G-type
      */
 
-    public ASCIIPType(Settings s, AbstractGType p) {
+    public ASCIIPType(AbstractSettings s, AbstractGType p) {
         super(s, p);
     }
 

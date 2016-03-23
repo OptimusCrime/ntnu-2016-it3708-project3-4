@@ -1,7 +1,7 @@
 package org.thomas.annea.ea.ptype;
 
 import org.thomas.annea.ea.gtype.AbstractGType;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 public class BinaryPType extends AbstractPType {
 
@@ -11,7 +11,7 @@ public class BinaryPType extends AbstractPType {
      * @param p Instance of the G-type
      */
 
-    public BinaryPType(Settings s, AbstractGType p) {
+    public BinaryPType(AbstractSettings s, AbstractGType p) {
         super(s, p);
     }
 

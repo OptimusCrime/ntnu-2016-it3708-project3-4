@@ -1,7 +1,7 @@
 package org.thomas.annea.flatland;
 
 import org.thomas.annea.tools.RandomHelper;
-import org.thomas.annea.tools.Settings;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.Random;
 public class Scenario {
 
     // Reference to the settings
-    private Settings settings;
+    private AbstractSettings settings;
 
     // Various settings
     private double probabilityFood;
@@ -25,7 +25,7 @@ public class Scenario {
      * Constructor
      */
 
-    public Scenario(Settings s) {
+    public Scenario(AbstractSettings s) {
         // Set the settings
         settings = s;
 

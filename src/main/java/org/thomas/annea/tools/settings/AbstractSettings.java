@@ -1,35 +1,39 @@
-package org.thomas.annea.tools;
+package org.thomas.annea.tools.settings;
 
 import java.util.HashMap;
 
-public class Settings {
+public abstract class AbstractSettings {
 
-    private int numberOfValues = 10;
-    private String gtype = "BinaryGType";
-    private String ptype = "BinaryPType";
-    private String fitness = "OneMaxFitness";
-    private String adultSelection = "FullGenerationalReplacement";
-    private String parentSelection = "FitnessProportionate";
-    private int elitism = 0;
+    /**
+     * Various things
+     */
 
-    private int maxChildren = 100;
-    private int maxAdults = 100;
-    private int maxGenerations = 100;
-    private int tournamentSize = 10;
+    protected int numberOfValues = 10;
+    protected String gtype = "BinaryGType";
+    protected String ptype = "BinaryPType";
+    protected String fitness = "OneMaxFitness";
+    protected String adultSelection = "FullGenerationalReplacement";
+    protected String parentSelection = "FitnessProportionate";
+    protected int elitism = 0;
 
-    private HashMap<String, String> settings = new HashMap<>();
+    protected int maxChildren = 100;
+    protected int maxAdults = 100;
+    protected int maxGenerations = 100;
+    protected int tournamentSize = 10;
 
-    private int[] networkDimensions;
-    private String[] networkFuctions;
-    private int maxTimesteps = 10;
+    protected HashMap<String, String> settings = new HashMap<>();
 
-    private boolean demo = true;
-    private boolean plot = false;
+    protected int[] networkDimensions;
+    protected String[] networkFuctions;
+    protected int maxTimesteps = 10;
 
-    private int probabilityMutation = 5;
-    private int probabilityDoubleCrossover = 50;
-    private int probabilityCrossoverRate = 20;
-    private int probabilityTournamentSelection = 70;
+    protected boolean demo = true;
+    protected boolean plot = false;
+
+    protected int probabilityMutation = 5;
+    protected int probabilityDoubleCrossover = 50;
+    protected int probabilityCrossoverRate = 20;
+    protected int probabilityTournamentSelection = 70;
 
     /**
      * Various setters
