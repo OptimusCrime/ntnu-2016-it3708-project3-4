@@ -1,6 +1,6 @@
 package org.thomas.annea.flatland;
 
-import org.thomas.annea.gui.CellGui;
+import org.thomas.annea.gui.flatland.CellGui;
 
 public class Cell extends AbstractFlatlandObject implements Cloneable {
 

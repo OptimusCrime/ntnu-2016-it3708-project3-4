@@ -1,4 +1,4 @@
-package org.thomas.annea.gui;
+package org.thomas.annea.gui.flatland;
 
 import org.thomas.annea.flatland.Cell;
 
@@ -6,7 +6,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class CellGui extends AbstractGui {
+public class CellGui extends AbstractFlatlandGui {
 
     /**
      * Constructor

@@ -4,7 +4,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -28,7 +27,7 @@ import org.thomas.annea.tools.settings.AbstractSettings;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class FlatlandController extends AbstractController implements Initializable {
+public class BeerController extends AbstractController implements Initializable {
 
     // JavaFX stuff
     @FXML private Pane main;
@@ -65,7 +64,7 @@ public class FlatlandController extends AbstractController implements Initializa
      * @param s Instance of Settings
      */
 
-    public FlatlandController(AbstractSettings s) {
+    public BeerController(AbstractSettings s) {
         super(s);
 
         // Set reference afterwards (because hax)
@@ -80,6 +79,9 @@ public class FlatlandController extends AbstractController implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        populateGui();
+
+        /*
         // New solver
         solver = new FlatlandSolver(settings);
 
@@ -93,7 +95,7 @@ public class FlatlandController extends AbstractController implements Initializa
         populateGui();
 
         // Load the first scenario
-        loadScenario(0);
+        loadScenario(0);*/
     }
 
     /**
@@ -143,27 +145,6 @@ public class FlatlandController extends AbstractController implements Initializa
 
         // Calculate the size for each GUI object
         AbstractGui.SIZE = (int) ((750 - solver.getFlatland().getSize()) / solver.getFlatland().getSize());
-
-        // Populate the dropdown
-        choiceBoxOptions = FXCollections.observableArrayList();
-        if (solver.getFlatland().getSettings().getSetting("scenario_mode").equals("static")) {
-            // Static scenarios, just loop the list and add them all
-            for (int i = 0; i < solver.getFlatland().getScenarios().size(); i++) {
-                choiceBoxOptions.add("Scenario #" + (i + 1));
-            }
-        }
-        else {
-            // Dynamic scenarios, first remove all scenarios present
-            solver.getFlatland().clearScenarios();
-
-            for (int i = 0; i < solver.getFlatland().getScenariosToRun(); i++) {
-                // Add a new scenario
-                solver.getFlatland().newScenario();
-
-                // Add to choice box
-                choiceBoxOptions.add("Random scenario #" + (i + 1));
-            }
-        }
 
         // Set the items
         choiceBoxScenario.setItems(choiceBoxOptions);

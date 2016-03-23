@@ -1,7 +1,7 @@
 package org.thomas.annea.flatland;
 
 import org.jblas.DoubleMatrix;
-import org.thomas.annea.gui.AgentGui;
+import org.thomas.annea.gui.flatland.AgentGui;
 
 public class Agent extends AbstractFlatlandObject {
 

@@ -1,10 +1,10 @@
-package org.thomas.annea.gui;
+package org.thomas.annea.gui.flatland;
 
 import org.thomas.annea.flatland.AbstractFlatlandObject;
 
 import javafx.scene.canvas.Canvas;
 
-public class AbstractGui {
+public abstract class AbstractFlatlandGui {
 
     // The size of each GUI object
     public static int SIZE = 75;
@@ -15,7 +15,7 @@ public class AbstractGui {
     // The canvas
     protected Canvas canvas;
 
-    public AbstractGui() {
+    public AbstractFlatlandGui() {
         // Create the actual canvas
         canvas = new Canvas(SIZE + 1, SIZE + 1);
     }
