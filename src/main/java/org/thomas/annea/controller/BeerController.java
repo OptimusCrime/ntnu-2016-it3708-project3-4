@@ -31,10 +31,8 @@ public class BeerController extends AbstractController implements Initializable 
     // JavaFX stuff
     @FXML private Pane main;
     @FXML private Group group;
-    @FXML private ChoiceBox choiceBoxScenario;
     @FXML private Slider sliderRefreshRate;
 
-    @FXML private Button buttonScenarioNew;
     @FXML private Button buttonPlayPause;
 
     @FXML private Label labelRefreshRate;

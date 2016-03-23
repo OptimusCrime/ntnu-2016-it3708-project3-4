@@ -1,6 +1,6 @@
 package org.thomas.annea;
 
-import org.thomas.annea.controller.FlatlandController;
+import org.thomas.annea.controller.BeerController;
 
 public class BeerMain extends AbstractMain {
 
@@ -19,7 +19,7 @@ public class BeerMain extends AbstractMain {
         parseConfig(args);
 
         // Set the correct controller
-        controller = new FlatlandController((config.getSettings()));
+        controller = new BeerController((config.getSettings()));
 
         // Start JavaFX magic here
         launch(args);
