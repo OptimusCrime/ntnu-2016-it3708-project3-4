@@ -16,7 +16,7 @@ public class ConfigLoader {
     private AbstractSettings settings;
 
     public ConfigLoader() {
-        this("settings.conf", "Flatland");
+        this("settings.conf", "flatland");
     }
 
     /**
@@ -33,12 +33,18 @@ public class ConfigLoader {
      */
 
     public ConfigLoader(String fileName, String type) {
+        // Get filename prefix
+        String fileNamePrefix = "flatland";
+        if (type.equals("beer")) {
+            fileNamePrefix = "beer";
+        }
+
         // Construct full file path
-        String fullPath = System.getProperty("user.dir") + "/" + fileName;
+        String fullPath = System.getProperty("user.dir") + "/" + fileNamePrefix + "_" + fileName;
         System.out.println("Trying to load config file: " + fullPath);
 
         // Create new instance of a setting
-        if (type.equals("Flatland")) {
+        if (type.equals("flatland")) {
             settings = new FlatlandSettings();
         }
         else {

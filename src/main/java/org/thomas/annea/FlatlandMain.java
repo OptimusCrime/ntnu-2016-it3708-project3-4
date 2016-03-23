@@ -41,10 +41,10 @@ public class FlatlandMain extends Application {
         // Parse the settings
         ConfigLoader config;
         if (args.length > 0) {
-            config = new ConfigLoader(args[0], "Flatland");
+            config = new ConfigLoader(args[0], "flatland");
         }
         else {
-            config = new ConfigLoader("Flatland");
+            config = new ConfigLoader("flatland");
         }
 
         // Create the controller and supply the settings
