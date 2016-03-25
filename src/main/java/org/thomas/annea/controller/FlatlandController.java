@@ -22,6 +22,8 @@ import org.thomas.annea.flatland.Cell;
 import org.thomas.annea.flatland.Scenario;
 import org.thomas.annea.gui.flatland.AbstractFlatlandGui;
 import org.thomas.annea.runner.FlatlandProblemRunner;
+import org.thomas.annea.solvers.AbstractSolver;
+import org.thomas.annea.solvers.BeerSolver;
 import org.thomas.annea.solvers.FlatlandSolver;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
@@ -52,7 +54,7 @@ public class FlatlandController extends AbstractController implements Initializa
     private static int tickLength = 200;
 
     // Reference to the solver
-    private FlatlandSolver solver;
+    private AbstractSolver solver;
 
     // For the simulations
     private static FlatlandProblemRunner runner;
@@ -140,25 +142,27 @@ public class FlatlandController extends AbstractController implements Initializa
      */
 
     private void populateGui() {
+        // Cast all the things
+        FlatlandSolver localSolver = (FlatlandSolver) solver;
 
         // Calculate the size for each GUI object
-        AbstractFlatlandGui.SIZE = (int) ((750 - solver.getFlatland().getSize()) / solver.getFlatland().getSize());
+        AbstractFlatlandGui.SIZE = (int) ((750 - localSolver.getFlatland().getSize()) / localSolver.getFlatland().getSize());
 
         // Populate the dropdown
         choiceBoxOptions = FXCollections.observableArrayList();
-        if (solver.getFlatland().getSettings().getSetting("scenario_mode").equals("static")) {
+        if (localSolver.getFlatland().getSettings().getSetting("scenario_mode").equals("static")) {
             // Static scenarios, just loop the list and add them all
-            for (int i = 0; i < solver.getFlatland().getScenarios().size(); i++) {
+            for (int i = 0; i < localSolver.getFlatland().getScenarios().size(); i++) {
                 choiceBoxOptions.add("Scenario #" + (i + 1));
             }
         }
         else {
             // Dynamic scenarios, first remove all scenarios present
-            solver.getFlatland().clearScenarios();
+            localSolver.getFlatland().clearScenarios();
 
-            for (int i = 0; i < solver.getFlatland().getScenariosToRun(); i++) {
+            for (int i = 0; i < localSolver.getFlatland().getScenariosToRun(); i++) {
                 // Add a new scenario
-                solver.getFlatland().newScenario();
+                localSolver.getFlatland().newScenario();
 
                 // Add to choice box
                 choiceBoxOptions.add("Random scenario #" + (i + 1));
@@ -243,7 +247,8 @@ public class FlatlandController extends AbstractController implements Initializa
         labelTimestep.setText("1");
 
         // Get the scenario
-        Scenario scenario = solver.getFlatland().getScenario(index);
+        FlatlandSolver localSolver = (FlatlandSolver) solver;
+        Scenario scenario = localSolver.getFlatland().getScenario(index);
 
         // Set up the network
         Network ann = solver.getNetwork();
@@ -320,17 +325,19 @@ public class FlatlandController extends AbstractController implements Initializa
         group.getChildren().add(runner.getAgent().getGui().draw());
     }
 
-    @FXML
+    @FXML @SuppressWarnings("unchecked")
     private void buttonScenarioNewClicked(Event event) {
+        FlatlandSolver localSolver = (FlatlandSolver) solver;
+
         // Create new scenario
-        solver.getFlatland().newScenario();
+        localSolver.getFlatland().newScenario();
 
         // Add to dropdown
-        if (solver.getFlatland().getSettings().getSetting("scenario_mode").equals("static")) {
-            choiceBoxOptions.add("New scenario #" + solver.getFlatland().getScenarios().size());
+        if (localSolver.getFlatland().getSettings().getSetting("scenario_mode").equals("static")) {
+            choiceBoxOptions.add("New scenario #" + localSolver.getFlatland().getScenarios().size());
         }
         else {
-            choiceBoxOptions.add("New random scenario #" + solver.getFlatland().getScenarios().size());
+            choiceBoxOptions.add("New random scenario #" + localSolver.getFlatland().getScenarios().size());
         }
 
         // Set the items
@@ -340,7 +347,7 @@ public class FlatlandController extends AbstractController implements Initializa
         choiceBoxScenario.getSelectionModel().select(choiceBoxOptions.size() - 1);
 
         // Load the new scenario
-        loadScenario(solver.getFlatland().getScenarios().size() - 1);
+        loadScenario(localSolver.getFlatland().getScenarios().size() - 1);
     }
 
 

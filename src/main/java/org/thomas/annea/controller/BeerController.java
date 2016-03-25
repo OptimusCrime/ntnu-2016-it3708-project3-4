@@ -20,7 +20,8 @@ import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.flatland.Cell;
 import org.thomas.annea.flatland.Scenario;
 import org.thomas.annea.runner.FlatlandProblemRunner;
-import org.thomas.annea.solvers.FlatlandSolver;
+import org.thomas.annea.solvers.AbstractSolver;
+import org.thomas.annea.solvers.BeerSolver;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.net.URL;
@@ -48,7 +49,7 @@ public class BeerController extends AbstractController implements Initializable 
     private static int tickLength = 200;
 
     // Reference to the solver
-    private FlatlandSolver solver;
+    private AbstractSolver solver;
 
     // For the simulations
     private static FlatlandProblemRunner runner;
@@ -78,9 +79,8 @@ public class BeerController extends AbstractController implements Initializable 
     public void initialize(URL location, ResourceBundle resources) {
         populateGui();
 
-        /*
         // New solver
-        solver = new FlatlandSolver(settings);
+        solver = new BeerSolver(settings);
 
         // Solve the problem
         solver.solve();
@@ -92,7 +92,7 @@ public class BeerController extends AbstractController implements Initializable 
         populateGui();
 
         // Load the first scenario
-        loadScenario(0);*/
+        loadScenario(0);
     }
 
     /**
@@ -186,6 +186,7 @@ public class BeerController extends AbstractController implements Initializable 
      */
 
     private void loadScenario(int index) {
+        /*
         // Store the index of the scenario we have present
         choiceBoxIndex = index;
 
@@ -222,6 +223,7 @@ public class BeerController extends AbstractController implements Initializable 
 
         // Draw the initial frame
         draw();
+        */
     }
 
     /**
