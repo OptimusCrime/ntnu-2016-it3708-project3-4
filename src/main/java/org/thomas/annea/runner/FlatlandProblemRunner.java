@@ -1,23 +1,15 @@
 package org.thomas.annea.runner;
 
 import org.jblas.DoubleMatrix;
-import org.thomas.annea.ann.Network;
 import org.thomas.annea.flatland.Agent;
 import org.thomas.annea.flatland.Cell;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
-public class FlatlandProblemRunner {
-
-    // Reference to the settings
-    private AbstractSettings settings;
+public class FlatlandProblemRunner extends AbstractProblemRunner {
 
     // Various references to stuff we need to run the problem
-    private Network ann;
     private Cell[][] grid;
     private Agent agent;
-
-    // Keep track of the current timestep
-    private int timestep;
 
     // Stats
     private int food;
@@ -31,11 +23,9 @@ public class FlatlandProblemRunner {
      */
 
     public FlatlandProblemRunner(AbstractSettings s) {
-        // Set reference to settings
-        settings = s;
+        super(s);
 
         // Store the current timestep
-        timestep = 0;
         food = 0;
         poison = 0;
         totalFood = 0;
@@ -46,6 +36,7 @@ public class FlatlandProblemRunner {
      * Run the maximum number of timesteps
      */
 
+    @Override
     public void runAll() {
         // Get the information
         getTotal();
@@ -61,6 +52,7 @@ public class FlatlandProblemRunner {
      * Run one step
      */
 
+    @Override
     public boolean runStep() {
         // Check if can run the step at all
         if (timestep == settings.getMaxTimesteps()) {
@@ -114,15 +106,6 @@ public class FlatlandProblemRunner {
     }
 
     /**
-     * Setter for Network
-     * @param n Instance of Network
-     */
-
-    public void setNetwork(Network n) {
-        ann = n;
-    }
-
-    /**
      * Setter for Grid
      * @param g Instance of Grid
      */
@@ -167,9 +150,4 @@ public class FlatlandProblemRunner {
     public int getTotalPoison() {
         return totalPoison;
     }
-
-    public int getTimestep() {
-        return timestep;
-    }
-
 }

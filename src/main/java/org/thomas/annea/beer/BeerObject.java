@@ -2,13 +2,13 @@ package org.thomas.annea.beer;
 
 import org.thomas.annea.gui.beer.ObjectGui;
 
-public class Object extends AbstractBeerObject {
+public class BeerObject extends AbstractBeerObject {
 
     private int size;
     private int location;
     private int row;
 
-    public Object(int s, int loc) {
+    public BeerObject(int s, int loc) {
         super(new ObjectGui());
 
         // Set the references

@@ -4,6 +4,7 @@ import org.thomas.annea.ann.Network;
 import org.thomas.annea.beer.BeerWorld;
 import org.thomas.annea.ea.EA;
 import org.thomas.annea.ea.gtype.AbstractGType;
+import org.thomas.annea.runner.BeerProblemRunner;
 
 import java.util.ArrayList;
 
@@ -50,6 +51,17 @@ public class BeerFitness extends AbstractFitness {
     public static double calculateFitness(AbstractGType individual) {
         // Set the weights for this individual
         ann.setWeights(individual);
+
+        // New problem runner
+        BeerProblemRunner runner = new BeerProblemRunner(beerWorld.getSettings());
+
+        // Set various information
+        runner.setNetwork(ann);
+        runner.setObjects(beerWorld.getObjects());
+        runner.setTracker(beerWorld.getTracker());
+
+        // Run the entire scenario
+        runner.runAll();
 
         return 0;
     }

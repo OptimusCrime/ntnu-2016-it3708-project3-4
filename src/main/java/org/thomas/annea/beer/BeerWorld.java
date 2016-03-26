@@ -56,9 +56,9 @@ public class BeerWorld {
         return settings;
     }
 
-    public List<Object> getObjects() {
+    public List<BeerObject> getObjects() {
         // Create a list to hold the new objects
-        List<Object> objectList = new ArrayList<>();
+        List<BeerObject> objectList = new ArrayList<>();
 
         // Loop the objects
         for (int i = 0; i < objects.size(); i++) {
@@ -70,7 +70,7 @@ public class BeerWorld {
             int location = pair.snd;
 
             // Create a new object and add to list
-            objectList.add(new Object(size, location));
+            objectList.add(new BeerObject(size, location));
         }
 
         // Return the list of objects
