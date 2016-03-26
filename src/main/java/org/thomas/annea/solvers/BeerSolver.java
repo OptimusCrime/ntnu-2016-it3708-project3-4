@@ -2,8 +2,8 @@ package org.thomas.annea.solvers;
 
 import org.thomas.annea.ann.Network;
 import org.thomas.annea.beer.BeerWorld;
+import org.thomas.annea.ea.EA;
 import org.thomas.annea.ea.fitness.BeerFitness;
-
 import org.thomas.annea.tools.settings.AbstractSettings;
 
 public class BeerSolver extends AbstractSolver {
@@ -35,7 +35,19 @@ public class BeerSolver extends AbstractSolver {
         BeerFitness.setNetwork(ann);
     }
 
+    /**
+     * Derp
+     * @param evoAlg
+     */
+
+    @Override
+    public void calculateFitness(EA evoAlg) {
+        BeerFitness.test(evoAlg);
+    }
+
     public BeerWorld getBeerWorld() {
         return beerWorld;
     }
+
+
 }

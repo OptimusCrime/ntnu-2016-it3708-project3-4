@@ -2,7 +2,6 @@ package org.thomas.annea.solvers;
 
 import org.thomas.annea.ann.Network;
 import org.thomas.annea.ea.EA;
-import org.thomas.annea.ea.fitness.FlatlandFitness;
 import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
@@ -45,7 +44,7 @@ public abstract class AbstractSolver {
             System.out.println("========= Generation #" + (i + 1) + " =========");
 
             // Calculate fitness
-            FlatlandFitness.test(evoAlg);
+            calculateFitness(evoAlg);
 
             // Do adult selection
             evoAlg.adultSelection();
@@ -54,7 +53,7 @@ public abstract class AbstractSolver {
             evoAlg.parentSelection();
 
             // Calculate fitness
-            FlatlandFitness.test(evoAlg);
+            calculateFitness(evoAlg);
 
             // Stats n shit
             evoAlg.getStats();
@@ -63,6 +62,13 @@ public abstract class AbstractSolver {
         // Store the best individual
         bestIndividual = evoAlg.getBest();
     }
+
+    /**
+     * Derp
+     * @param evoAlg
+     */
+
+    public abstract void calculateFitness(EA evoAlg);
 
     public Network getNetwork() {
         return ann;

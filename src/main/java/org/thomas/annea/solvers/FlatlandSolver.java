@@ -1,9 +1,9 @@
 package org.thomas.annea.solvers;
 
 import org.thomas.annea.ann.Network;
+import org.thomas.annea.ea.EA;
 import org.thomas.annea.ea.fitness.FlatlandFitness;
 import org.thomas.annea.flatland.Flatland;
-
 import org.thomas.annea.tools.settings.AbstractSettings;
 
 public class FlatlandSolver extends AbstractSolver {
@@ -34,6 +34,17 @@ public class FlatlandSolver extends AbstractSolver {
         FlatlandFitness.setFlatland(flatland);
         FlatlandFitness.setNetwork(ann);
     }
+
+    /**
+     * Derp
+     * @param evoAlg
+     */
+
+    @Override
+    public void calculateFitness(EA evoAlg) {
+        FlatlandFitness.test(evoAlg);
+    }
+
 
     public Flatland getFlatland() {
         return flatland;

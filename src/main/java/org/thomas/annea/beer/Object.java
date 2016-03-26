@@ -8,8 +8,15 @@ public class Object extends AbstractBeerObject {
     private int location;
     private int row;
 
-    public Object() {
+    public Object(int s, int loc) {
         super(new ObjectGui());
+
+        // Set the references
+        size = s;
+        location = loc;
+
+        // Set row to initial value
+        row = 14;
 
         // Set the gui source
         gui.setSource(this);

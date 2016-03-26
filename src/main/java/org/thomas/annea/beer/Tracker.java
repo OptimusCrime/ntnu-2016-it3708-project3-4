@@ -6,8 +6,11 @@ public class Tracker extends AbstractBeerObject {
 
     private int location;
 
-    public Tracker() {
+    public Tracker(int loc) {
         super(new TrackerGui());
+
+        // Set the tracker location
+        location = loc;
 
         // Set the gui source
         gui.setSource(this);
