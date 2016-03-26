@@ -1,7 +1,6 @@
 package org.thomas.annea.beer;
 
 import org.thomas.annea.gui.beer.ObjectGui;
-import org.thomas.annea.gui.flatland.CellGui;
 
 public class Object extends AbstractBeerObject {
 

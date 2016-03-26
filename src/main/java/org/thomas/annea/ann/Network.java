@@ -1,8 +1,9 @@
 package org.thomas.annea.ann;
 
-import org.jblas.DoubleMatrix;
 import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.tools.settings.AbstractSettings;
+
+import org.jblas.DoubleMatrix;
 
 import java.lang.reflect.Method;
 

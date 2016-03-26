@@ -4,9 +4,6 @@ import org.thomas.annea.ann.Network;
 import org.thomas.annea.beer.BeerWorld;
 import org.thomas.annea.ea.EA;
 import org.thomas.annea.ea.gtype.AbstractGType;
-import org.thomas.annea.flatland.Flatland;
-import org.thomas.annea.flatland.Scenario;
-import org.thomas.annea.runner.FlatlandProblemRunner;
 
 import java.util.ArrayList;
 

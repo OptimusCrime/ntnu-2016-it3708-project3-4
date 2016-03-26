@@ -1,5 +1,15 @@
 package org.thomas.annea.controller;
 
+import org.thomas.annea.ann.Network;
+import org.thomas.annea.ea.gtype.AbstractGType;
+import org.thomas.annea.flatland.Cell;
+import org.thomas.annea.flatland.Scenario;
+import org.thomas.annea.gui.flatland.AbstractFlatlandGui;
+import org.thomas.annea.runner.FlatlandProblemRunner;
+import org.thomas.annea.solvers.AbstractSolver;
+import org.thomas.annea.solvers.FlatlandSolver;
+import org.thomas.annea.tools.settings.AbstractSettings;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
@@ -15,17 +25,6 @@ import javafx.scene.Group;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
-
-import org.thomas.annea.ann.Network;
-import org.thomas.annea.ea.gtype.AbstractGType;
-import org.thomas.annea.flatland.Cell;
-import org.thomas.annea.flatland.Scenario;
-import org.thomas.annea.gui.flatland.AbstractFlatlandGui;
-import org.thomas.annea.runner.FlatlandProblemRunner;
-import org.thomas.annea.solvers.AbstractSolver;
-import org.thomas.annea.solvers.BeerSolver;
-import org.thomas.annea.solvers.FlatlandSolver;
-import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.net.URL;
 import java.util.ResourceBundle;

@@ -1,9 +1,7 @@
 package org.thomas.annea.solvers;
 
 import org.thomas.annea.ann.Network;
-import org.thomas.annea.ea.EA;
 import org.thomas.annea.ea.fitness.FlatlandFitness;
-import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.flatland.Flatland;
 
 import org.thomas.annea.tools.settings.AbstractSettings;
