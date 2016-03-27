@@ -10,7 +10,14 @@ public class BeerProblemRunner extends AbstractProblemRunner {
 
     // Local stuff
     private List<BeerObject> objects;
+    private BeerObject currentObject;
+    private int currentObjectIndex;
     private Tracker tracker;
+
+    // Stats
+    private int capture;
+    private int avoidance;
+    private int fail;
 
     /**
      * Constructor
@@ -20,7 +27,14 @@ public class BeerProblemRunner extends AbstractProblemRunner {
     public BeerProblemRunner(AbstractSettings s) {
         super(s);
 
-        // TODO
+        // Set the current object to null and the index to 0
+        currentObject = null;
+        currentObjectIndex = 0;
+
+        // Set stats to 0
+        capture = 0;
+        avoidance = 0;
+        fail = 0;
     }
 
     /**
@@ -51,8 +65,57 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         // We are not done running, increase the current timestep
         timestep++;
 
-        // TODO
+        // Check if the current object is outside the world
+        if (currentObject != null) {
+            // We already have a current object, lower the object by one
+            currentObject.fall();
+
+            // Check if we have a object that is outside the world
+            if (currentObject.getRow() < 0) {
+                currentObject = null;
+            }
+        }
+
+        // Check if we need to get the next object
+        if (currentObject == null) {
+            // No current object, get the next one
+            currentObject = objects.get(currentObjectIndex);
+
+            // Increase the current object index
+            currentObjectIndex++;
+        }
+
         return true;
+    }
+
+    /**
+     *
+     * @return
+     */
+
+    public BeerObject getCurrentObject() {
+        return currentObject;
+    }
+
+    public Tracker getTracker() {
+        return tracker;
+    }
+
+    /**
+     *
+     * @return
+     */
+
+    public int getCapture() {
+        return capture;
+    }
+
+    public int getAvoidance() {
+        return avoidance;
+    }
+
+    public int getFail() {
+        return fail;
     }
 
     /**

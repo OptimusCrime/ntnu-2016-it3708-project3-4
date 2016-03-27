@@ -4,6 +4,8 @@ import javafx.scene.canvas.Canvas;
 import org.thomas.annea.beer.AbstractBeerObject;
 
 public class AbstractBeerGui {
+    // Size
+    public final int OBJECTSIZE = 40;
 
     // Instance of the source object, which is a flatland object
     protected AbstractBeerObject source;
@@ -11,8 +13,19 @@ public class AbstractBeerGui {
     // The canvas
     protected Canvas canvas;
 
+    // Keep track of the initial drawing
+    protected boolean drawn;
+
+    /**
+     * Derp
+     */
+
     public AbstractBeerGui() {
-        // TODO
+        // Create the canvas
+        canvas = new Canvas();
+
+        // Set drawn to false
+        drawn = false;
     }
 
     /**
@@ -31,5 +44,14 @@ public class AbstractBeerGui {
 
     public AbstractBeerObject getSource() {
         return source;
+    }
+
+    /**
+     * Method for drawing
+     * @return The canvas on which the drawing is done on
+     */
+
+    public Canvas draw() {
+        return canvas;
     }
 }

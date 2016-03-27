@@ -6,6 +6,11 @@ public class Tracker extends AbstractBeerObject {
 
     private int location;
 
+    /**
+     *
+     * @param loc
+     */
+
     public Tracker(int loc) {
         super(new TrackerGui());
 
@@ -14,5 +19,14 @@ public class Tracker extends AbstractBeerObject {
 
         // Set the gui source
         gui.setSource(this);
+    }
+
+    /**
+     * Derp
+     * @return
+     */
+
+    public int getLocation() {
+        return location;
     }
 }

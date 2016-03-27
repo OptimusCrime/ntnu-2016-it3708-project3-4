@@ -1,7 +1,10 @@
 package org.thomas.annea.controller;
 
-import org.thomas.annea.flatland.Cell;
-import org.thomas.annea.runner.FlatlandProblemRunner;
+import org.thomas.annea.ann.Network;
+import org.thomas.annea.beer.BeerObject;
+import org.thomas.annea.beer.BeerWorld;
+import org.thomas.annea.ea.gtype.AbstractGType;
+import org.thomas.annea.runner.BeerProblemRunner;
 import org.thomas.annea.solvers.AbstractSolver;
 import org.thomas.annea.solvers.BeerSolver;
 import org.thomas.annea.tools.settings.AbstractSettings;
@@ -35,8 +38,9 @@ public class BeerController extends AbstractController implements Initializable 
 
     @FXML private Label labelRefreshRate;
     @FXML private Label labelTimestep;
-    @FXML private Label labelFood;
-    @FXML private Label labelPoison;
+    @FXML private Label labelCapture;
+    @FXML private Label labelAvoidance;
+    @FXML private Label labelFail;
 
     // Various dropdown stuff
     private int choiceBoxIndex;
@@ -49,7 +53,7 @@ public class BeerController extends AbstractController implements Initializable 
     private AbstractSolver solver;
 
     // For the simulations
-    private static FlatlandProblemRunner runner;
+    private static BeerProblemRunner runner;
 
     // For the timeline
     private Timeline timeline;
@@ -89,7 +93,7 @@ public class BeerController extends AbstractController implements Initializable 
         populateGui();
 
         // Load the first scenario
-        loadScenario(0);
+        loadWorld();
     }
 
     /**
@@ -178,15 +182,10 @@ public class BeerController extends AbstractController implements Initializable 
     }
 
     /**
-     * Load a scenario
-     * @param index Scenario index to load
+     * Loads the world
      */
 
-    private void loadScenario(int index) {
-        /*
-        // Store the index of the scenario we have present
-        choiceBoxIndex = index;
-
+    private void loadWorld() {
         // Make sure to pause the player
         running = false;
 
@@ -197,8 +196,9 @@ public class BeerController extends AbstractController implements Initializable 
         // Reset the timestep
         labelTimestep.setText("1");
 
-        // Get the scenario
-        Scenario scenario = solver.getFlatland().getScenario(index);
+        // Get the beer world
+        BeerSolver localSolver = (BeerSolver) solver;
+        BeerWorld beerWorld = localSolver.getBeerWorld();
 
         // Set up the network
         Network ann = solver.getNetwork();
@@ -209,18 +209,19 @@ public class BeerController extends AbstractController implements Initializable 
         // Apply the weights from the best individual to the ANN
         ann.setWeights(bestIndividual);
 
-        runner = new FlatlandProblemRunner(settings);
+        // Create a new instance of the runner
+        runner = new BeerProblemRunner(settings);
         runner.setNetwork(solver.getNetwork());
-        runner.setGrid(scenario.getGridTwoDimensions());
-        runner.setAgent(scenario.getAgent());
+        runner.setObjects(beerWorld.getObjects());
+        runner.setTracker(beerWorld.getTracker());
 
         // Update eaten stats
-        labelFood.setText("0 / " + runner.getTotalFood());
-        labelPoison.setText("0 / " + runner.getTotalPoison());
+        labelCapture.setText("0");
+        labelAvoidance.setText("0");
+        labelFail.setText("0");
 
         // Draw the initial frame
         draw();
-        */
     }
 
     /**
@@ -246,9 +247,10 @@ public class BeerController extends AbstractController implements Initializable 
                 // Update the current tick
                 labelTimestep.setText(Integer.toString(runner.getTimestep()));
 
-                // Update eaten stats
-                labelFood.setText(runner.getFood() + " / " + runner.getTotalFood());
-                labelPoison.setText(runner.getPoison() + " / " + runner.getTotalPoison());
+                // Update stats
+                labelCapture.setText(Integer.toString(runner.getCapture()));
+                labelAvoidance.setText(Integer.toString(runner.getAvoidance()));
+                labelFail.setText(Integer.toString(runner.getFail()));
 
                 // Draw the tick
                 draw();
@@ -264,16 +266,15 @@ public class BeerController extends AbstractController implements Initializable 
         // Clear all the children
         group.getChildren().clear();
 
-        // Get the grid
-        Cell[][] grid = runner.getGrid();
-        for (int y = 0; y < grid.length; y++) {
-            for (int x = 0; x < grid.length; x++) {
-                group.getChildren().add(grid[y][x].getGui().draw());
-            }
+        // Draw the current object
+        BeerObject beerObject = runner.getCurrentObject();
+
+        if (beerObject != null) {
+            group.getChildren().add(beerObject.getGui().draw());
         }
 
-        // Add the agent
-        group.getChildren().add(runner.getAgent().getGui().draw());
+        // Draw the tracker
+        group.getChildren().add(runner.getTracker().getGui().draw());
     }
 
     /**
