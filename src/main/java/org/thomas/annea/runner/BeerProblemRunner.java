@@ -1,5 +1,6 @@
 package org.thomas.annea.runner;
 
+import org.jblas.DoubleMatrix;
 import org.thomas.annea.beer.BeerObject;
 import org.thomas.annea.beer.Tracker;
 import org.thomas.annea.tools.settings.AbstractSettings;
@@ -82,7 +83,14 @@ public class BeerProblemRunner extends AbstractProblemRunner {
             currentObjectIndex++;
         }
 
-        // TODO read sensores and move the tracker
+        // Get the input from the agent
+        DoubleMatrix inputSensors = tracker.getInput(currentObject);
+
+        // Propagate the sensor values
+        DoubleMatrix output = ann.propagate(inputSensors);
+
+        // Move the tracker
+        tracker.move(output);
 
         // Check if the current object is outside the world
         if (currentObject != null) {

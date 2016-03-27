@@ -63,7 +63,17 @@ public class BeerFitness extends AbstractFitness {
         // Run the entire scenario
         runner.runAll();
 
-        return 0;
+        // Calculate the score
+        int fail = runner.getFail();
+        double score = (runner.getAvoidance() * 0) + runner.getCapture();
+
+        // If we found poison, cripple the fitness value
+        if (fail > 0) {
+            return score / (double) (fail + 1);
+        }
+
+        // Return the final fitness score
+        return score;
     }
 
     /**
