@@ -14,6 +14,8 @@ public class BeerProblemRunner extends AbstractProblemRunner {
     private int currentObjectIndex;
     private Tracker tracker;
 
+    private boolean removeObjectNextTick;
+
     // Stats
     private int capture;
     private int avoidance;
@@ -30,6 +32,9 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         // Set the current object to null and the index to 0
         currentObject = null;
         currentObjectIndex = 0;
+
+        // Indicates if a object should be removed next tick
+        removeObjectNextTick = false;
 
         // Set stats to 0
         capture = 0;
@@ -65,19 +70,11 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         // We are not done running, increase the current timestep
         timestep++;
 
-        // Check if the current object is outside the world
-        if (currentObject != null) {
-            // We already have a current object, lower the object by one
-            currentObject.fall();
-
-            // Check if we have a object that is outside the world
-            if (currentObject.getRow() < 0) {
-                currentObject = null;
-            }
-        }
-
         // Check if we need to get the next object
-        if (currentObject == null) {
+        if (removeObjectNextTick || currentObject == null) {
+            // Next object should not be removed, reset flag
+            removeObjectNextTick = false;
+
             // No current object, get the next one
             currentObject = objects.get(currentObjectIndex);
 
@@ -85,7 +82,103 @@ public class BeerProblemRunner extends AbstractProblemRunner {
             currentObjectIndex++;
         }
 
+        // TODO read sensores and move the tracker
+
+        // Check if the current object is outside the world
+        if (currentObject != null) {
+            // We already have a current object, lower the object by one
+            currentObject.fall();
+        }
+
+        // Check if we should check for capture/avoidance/fail
+        if (currentObject.getRow() <= 1) {
+            // Get the current object position
+            int[] currentObjectGrid = new int[currentObject.getSize()];
+            for (int i = 0; i < currentObjectGrid.length; i++) {
+                currentObjectGrid[i] = currentObject.getLocation() + i;
+            }
+
+            // Get the current tracker position
+            int[] trackerGrid = new int[5];
+            for (int i = 0; i < trackerGrid.length; i++) {
+                trackerGrid[i] = tracker.getLocation() + i;
+            }
+
+            // Handle different scenarios
+            if (currentObject.getRow() == 1) {
+                // Check if the objects are anywhere near each other
+                if (hasCollision(currentObjectGrid, trackerGrid)) {
+                    // Check if we have all the values present
+                    if (fullCollision(currentObjectGrid, trackerGrid)) {
+                        // Increase capture
+                        capture++;
+
+                        // Set object to be removed next tick
+                        removeObjectNextTick = true;
+                    }
+                    else {
+                        // This is then a fail
+                        fail++;
+
+                        // Set object to be removed next tick
+                        removeObjectNextTick = true;
+                    }
+                }
+            }
+            else if (currentObject.getRow() == 0) {
+                // At the bottom of the grid, here we check for avoidance or fail
+                if (!hasCollision(currentObjectGrid, trackerGrid)) {
+                    // No collision, this is a successful avoidance
+                    // TODO check size etc
+                    avoidance++;
+
+                    // Set object to be removed next tick
+                    removeObjectNextTick = true;
+                }
+                else {
+                    // This is then a fail
+                    fail++;
+
+                    // Set object to be removed next tick
+                    removeObjectNextTick = true;
+                }
+            }
+        }
+
+        // Tick was ran successfully
         return true;
+    }
+
+    private boolean fullCollision(int[] objectPos, int[] trackerPos) {
+        for (int i = 0; i < objectPos.length; i++) {
+            // Check if we found the current value in the tracker positions
+            boolean found = false;
+            for (int j = 0; j < trackerPos.length; j++) {
+                if (objectPos[i] == trackerPos[j]) {
+                    found = true;
+                }
+            }
+
+            // Check if the value was not found
+            if (!found) {
+                return false;
+            }
+        }
+
+        // If we got this far we have a direct hit
+        return true;
+    }
+
+    private boolean hasCollision(int[] objectPos, int[] trackerPos) {
+        for (int i = 0; i < objectPos.length; i++) {
+            for (int j = 0; j < trackerPos.length; j++) {
+                if (objectPos[i] == trackerPos[j]) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
