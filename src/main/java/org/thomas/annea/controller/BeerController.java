@@ -275,8 +275,15 @@ public class BeerController extends AbstractController implements Initializable 
         // Draw the current object
         BeerObject beerObject = runner.getCurrentObject();
         if (beerObject != null) {
+            // Draw the object
             beerObject.getGui().draw(c);
 
+            // Set reference to the tracker
+            runner.getTracker().setTrackerReference(beerObject);
+        }
+        else {
+            // Empty the reference to the object for the tracker
+            runner.getTracker().setTrackerReference(null);
         }
 
         // Draw the tracker

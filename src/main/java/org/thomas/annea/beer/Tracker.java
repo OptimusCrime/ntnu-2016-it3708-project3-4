@@ -5,12 +5,14 @@ import org.thomas.annea.gui.beer.TrackerGui;
 
 public class Tracker extends AbstractBeerObject {
 
-    public static final int NONE = 0;
     public static final int LEFT = 1;
     public static final int RIGHT = 2;
 
     // Keep track of the location
     private int location;
+
+    // Reference for the beer object
+    private BeerObject beerObject;
 
     /**
      *
@@ -28,6 +30,29 @@ public class Tracker extends AbstractBeerObject {
     }
 
     /**
+     * Derp
+     * @return
+     */
+
+    public int[] getTrackerLocation () {
+        // Get the current tracker position
+        int[] grid = new int[5];
+        int overflow = 0;
+        for (int i = 0; i < grid.length; i++) {
+            if ((location + i) > 29) {
+                grid[i] = overflow;
+                overflow++;
+            }
+            else {
+                grid[i] = location + i;
+            }
+        }
+
+        return grid;
+    }
+
+
+    /**
      *
      * @param object
      * @return
@@ -43,11 +68,8 @@ public class Tracker extends AbstractBeerObject {
             currentObjectGrid[i] = object.getLocation() + i;
         }
 
-        // Get the current tracker position
-        int[] trackerGrid = new int[5];
-        for (int i = 0; i < trackerGrid.length; i++) {
-            trackerGrid[i] = location + i;
-        }
+        // Get the current tracker location
+        int[] trackerGrid = getTrackerLocation();
 
         // Loop and check which tracker sensors detect anything
         for (int i = 0; i < trackerGrid.length; i++) {
@@ -60,7 +82,7 @@ public class Tracker extends AbstractBeerObject {
             }
 
             // Check if the value was not found
-            if (!found) {
+            if (found) {
                 inputValues.put(0, i, 1.0);
             }
         }
@@ -69,16 +91,14 @@ public class Tracker extends AbstractBeerObject {
         return inputValues;
     }
 
+    /**
+     *
+     * @param matrix
+     */
+
     public void move(DoubleMatrix matrix) {
         // Find the direction to move in
-        int direction = NONE;
-        double treashold = 0.1;
-
-        // Make sure to get over the treashold
-        if (matrix.get(0, 0) < treashold &&  matrix.get(0, 1) < treashold) {
-            return;
-        }
-
+        int direction;
         if (matrix.get(0, 0) > matrix.get(0, 1)) {
             direction = LEFT;
         }
@@ -87,7 +107,6 @@ public class Tracker extends AbstractBeerObject {
         }
 
         // TODO manitude
-        // TODO wrap (?)
 
         // Check what direction to move in
         if (direction == LEFT) {
@@ -95,15 +114,15 @@ public class Tracker extends AbstractBeerObject {
             location--;
 
             if (location < 0) {
-                location = 0;
+                location = 29;
             }
         }
-        else if (direction == RIGHT) {
+        else {
             // Move right
             location++;
 
-            if (location > 25) {
-                location = 24;
+            if (location > 29) {
+                location = 0;
             }
         }
     }
@@ -115,5 +134,18 @@ public class Tracker extends AbstractBeerObject {
 
     public int getLocation() {
         return location;
+    }
+
+    /**
+     *
+     * @param bo
+     */
+
+    public void setTrackerReference(BeerObject bo) {
+        beerObject = bo;
+    }
+
+    public BeerObject getBeerObjectReference() {
+        return beerObject;
     }
 }
