@@ -22,60 +22,45 @@ public class AgentGui extends AbstractFlatlandGui {
      */
 
     @Override
-    public Canvas draw() {
+    public void draw(Canvas c) {
         // Cast the source to an instance of agent
         Agent agent = (Agent) source;
 
-        // Check if we should change the size
-        if ((int) canvas.getHeight() != (SIZE + 1)) {
-            canvas.setHeight(SIZE + 1);
-            canvas.setWidth(SIZE + 1);
-        }
-
-        // Clear the canvas
-        canvas.getGraphicsContext2D().clearRect(0, 0, SIZE + 1, SIZE + 1);
-
-        // Translate to correct position on the stage
-        canvas.setTranslateX((agent.getX() * SIZE) + agent.getX());
-        canvas.setTranslateY((agent.getY() * SIZE) + agent.getY());
+        int x = agent.getX() * SIZE;
+        int y = agent.getY() * SIZE;
 
         // Get 2D context to draw on
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        GraphicsContext gc = c.getGraphicsContext2D();
 
         // Draw the agent
         gc.setFill(Color.BLUE);
-        gc.fillOval(10, 10, SIZE - 20, SIZE - 20);
+        gc.fillOval(x + 10, y + 10, SIZE - 20, SIZE - 20);
 
         // Draw the line
         gc.setStroke(Color.BLACK);
         gc.setLineWidth(4);
 
         // Calculate the heading indicator
-        int center = (SIZE / 2) - 2;
-        int x = 0;
-        int y = 0;
-
+        int headingX;
+        int headingY;
         if (agent.getHeading() == Agent.UP) {
-            x = center;
-            y = 0;
+            headingX = x + (SIZE / 2) - 2;
+            headingY = y + (SIZE / 2) - 40;
         }
         else if (agent.getHeading() == Agent.DOWN) {
-            x = center;
-            y = SIZE;
+            headingX = x + (SIZE / 2) - 2;
+            headingY = y + (SIZE / 2) + 40;
         }
         else if (agent.getHeading() == Agent.RIGHT) {
-            x = SIZE;
-            y = center;
+            headingX = x + (SIZE / 2) + 40;
+            headingY = y + (SIZE / 2) - 2;
         }
         else {
-            x = 0;
-            y = center;
+            headingX = x + (SIZE / 2) - 40;
+            headingY = y + (SIZE / 2) - 2;
         }
 
         // Draw the heading indicator
-        gc.strokeLine(center, center, x, y);
-
-        // Return the entire canvas
-        return canvas;
+        gc.strokeLine(x + (SIZE / 2) - 2, y + (SIZE / 2) - 2, headingX, headingY);
     }
 }

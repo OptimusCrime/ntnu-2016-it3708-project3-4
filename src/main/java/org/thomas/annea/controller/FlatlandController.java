@@ -1,10 +1,12 @@
 package org.thomas.annea.controller;
 
+import javafx.scene.canvas.Canvas;
 import org.thomas.annea.ann.Network;
 import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.flatland.Cell;
 import org.thomas.annea.flatland.Scenario;
 import org.thomas.annea.gui.flatland.AbstractFlatlandGui;
+import org.thomas.annea.gui.flatland.GridDrawer;
 import org.thomas.annea.runner.FlatlandProblemRunner;
 import org.thomas.annea.solvers.AbstractSolver;
 import org.thomas.annea.solvers.FlatlandSolver;
@@ -312,16 +314,27 @@ public class FlatlandController extends AbstractController implements Initializa
         // Clear all the children
         group.getChildren().clear();
 
+        // Create a new canvas
+        Canvas c = new Canvas();
+        c.setWidth(750);
+        c.setHeight(750);
+
+        // Draw the grid lines
+        GridDrawer.draw(c);
+
         // Get the grid
         Cell[][] grid = runner.getGrid();
         for (int y = 0; y < grid.length; y++) {
             for (int x = 0; x < grid.length; x++) {
-                group.getChildren().add(grid[y][x].getGui().draw());
+                grid[y][x].getGui().draw(c);
             }
         }
 
         // Add the agent
-        group.getChildren().add(runner.getAgent().getGui().draw());
+        runner.getAgent().getGui().draw(c);
+
+        // Add the canvas
+        group.getChildren().add(c);
     }
 
     @FXML @SuppressWarnings("unchecked")

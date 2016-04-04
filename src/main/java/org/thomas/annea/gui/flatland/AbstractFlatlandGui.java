@@ -12,14 +12,6 @@ public abstract class AbstractFlatlandGui {
     // Instance of the source object, which is a flatland object
     protected AbstractFlatlandObject source;
 
-    // The canvas
-    protected Canvas canvas;
-
-    public AbstractFlatlandGui() {
-        // Create the actual canvas
-        canvas = new Canvas(SIZE + 1, SIZE + 1);
-    }
-
     /**
      * Setter for the source of the GUI, the object is draws
      * @param s Instance of the object
@@ -40,10 +32,9 @@ public abstract class AbstractFlatlandGui {
 
     /**
      * Method for drawing
+     * @param c The canvas to draw on
      * @return The canvas on which the drawing is done on
      */
 
-    public Canvas draw() {
-        return canvas;
-    }
+    public abstract void draw(Canvas c);
 }

@@ -3,30 +3,12 @@ package org.thomas.annea.gui.beer;
 import javafx.scene.canvas.Canvas;
 import org.thomas.annea.beer.AbstractBeerObject;
 
-public class AbstractBeerGui {
+public abstract class AbstractBeerGui {
     // Size
     public final int OBJECTSIZE = 40;
 
     // Instance of the source object, which is a flatland object
     protected AbstractBeerObject source;
-
-    // The canvas
-    protected Canvas canvas;
-
-    // Keep track of the initial drawing
-    protected boolean drawn;
-
-    /**
-     * Derp
-     */
-
-    public AbstractBeerGui() {
-        // Create the canvas
-        canvas = new Canvas();
-
-        // Set drawn to false
-        drawn = false;
-    }
 
     /**
      * Setter for the source of the GUI, the object is draws
@@ -48,10 +30,9 @@ public class AbstractBeerGui {
 
     /**
      * Method for drawing
+     * @param c The canvas to draw on
      * @return The canvas on which the drawing is done on
      */
 
-    public Canvas draw() {
-        return canvas;
-    }
+    public abstract void draw(Canvas c);
 }

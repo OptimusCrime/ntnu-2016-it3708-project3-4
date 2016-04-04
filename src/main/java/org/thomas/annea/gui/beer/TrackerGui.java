@@ -22,10 +22,10 @@ public class TrackerGui extends AbstractBeerGui {
      */
 
     @Override
-    public Canvas draw() {
+    public void draw(Canvas c) {
         // Cast the source to an instance of tracker
         Tracker tracker = (Tracker) source;
-
+        /*
         // Check if we need to do the initial drawing
         if (!drawn) {
             // Create the canvas content
@@ -43,9 +43,6 @@ public class TrackerGui extends AbstractBeerGui {
 
         // Move the object to the correct location
         canvas.setTranslateX(OBJECTSIZE * tracker.getLocation());
-        canvas.setTranslateY(14 * OBJECTSIZE);
-
-        // Return the canvas
-        return canvas;
+        canvas.setTranslateY(14 * OBJECTSIZE);*/
     }
 }

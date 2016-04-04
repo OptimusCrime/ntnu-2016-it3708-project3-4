@@ -1,5 +1,6 @@
 package org.thomas.annea.controller;
 
+import javafx.scene.canvas.Canvas;
 import org.thomas.annea.ann.Network;
 import org.thomas.annea.beer.BeerObject;
 import org.thomas.annea.beer.BeerWorld;
@@ -266,15 +267,23 @@ public class BeerController extends AbstractController implements Initializable 
         // Clear all the children
         group.getChildren().clear();
 
+        // Create new canvas
+        Canvas c = new Canvas();
+        c.setWidth(1200);
+        c.setHeight(600);
+
         // Draw the current object
         BeerObject beerObject = runner.getCurrentObject();
-
         if (beerObject != null) {
-            group.getChildren().add(beerObject.getGui().draw());
+            beerObject.getGui().draw(c);
+
         }
 
         // Draw the tracker
-        group.getChildren().add(runner.getTracker().getGui().draw());
+        runner.getTracker().getGui().draw(c);
+
+        // Add the canvas to the group
+        group.getChildren().add(c);
     }
 
     /**

@@ -21,30 +21,23 @@ public class BeerObjectGui extends AbstractBeerGui {
      */
 
     @Override
-    public Canvas draw() {
+    public void draw(Canvas c) {
         // Cast the source to an instance of agent
         BeerObject beerObject = (BeerObject) source;
 
-        // Check if we need to do the initial drawing
-        if (!drawn) {
-            // Create the canvas content
-            canvas.setHeight(OBJECTSIZE);
-            canvas.setWidth(OBJECTSIZE * beerObject.getSize());
+        // Get 2D context to draw on
+        GraphicsContext gc = c.getGraphicsContext2D();
 
-            // Fill the canvas with content
-            GraphicsContext gc = canvas.getGraphicsContext2D();
-            gc.setFill(Color.BLUE);
-            gc.fillRect(0, 0, OBJECTSIZE * beerObject.getSize(), OBJECTSIZE);
+        // Get the various locations
+        int x = beerObject.getLocation() * OBJECTSIZE;
+        int y = (14 - beerObject.getRow()) * OBJECTSIZE;
+        int height = OBJECTSIZE;
+        int width = beerObject.getSize() * OBJECTSIZE;
 
-            // Set drawn to true, to avoid full redraw
-            drawn = true;
-        }
+        // Colorize
+        gc.setFill(Color.BLUE);
 
-        // Move the object to the correct location
-        canvas.setTranslateX(beerObject.getLocation() * OBJECTSIZE);
-        canvas.setTranslateY((14 - beerObject.getRow()) * OBJECTSIZE);
-
-        // Return the canvas
-        return canvas;
+        // Draw the rect
+        gc.fillRect(x, y, width, height);
     }
 }

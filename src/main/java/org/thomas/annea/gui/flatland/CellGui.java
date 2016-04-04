@@ -22,39 +22,15 @@ public class CellGui extends AbstractFlatlandGui {
      */
 
     @Override
-    public Canvas draw() {
+    public void draw(Canvas c) {
         // Cast the source to an instance of Cell
         Cell cell = (Cell) source;
 
-        // Check if we should change the size
-        if ((int) canvas.getHeight() != (SIZE + 1)) {
-            canvas.setHeight(SIZE + 1);
-            canvas.setWidth(SIZE + 1);
-        }
-
-        // Clear the canvas
-        canvas.getGraphicsContext2D().clearRect(0, 0, SIZE + 1, SIZE + 1);
-
-        // Translate to correct position on the stage
-        canvas.setTranslateX((cell.getX() * SIZE) + cell.getX());
-        canvas.setTranslateY((cell.getY() * SIZE) + cell.getY());
+        int x = cell.getX() * SIZE;
+        int y = cell.getY() * SIZE;
 
         // Get 2D context to draw on
-        GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        // Draw the actual square
-        gc.setFill(Color.WHITE);
-        gc.fillRect(0, 0, SIZE, SIZE);
-
-        // Draw lines
-        gc.setStroke(new Color(0.8784313725, 0.8784313725, 0.8784313725, 1));
-        gc.setLineWidth(1.0);
-        gc.moveTo(0, SIZE + 1);
-        gc.lineTo(SIZE + 1, SIZE + 1);
-        gc.stroke();
-        gc.moveTo(SIZE + 1, 0);
-        gc.lineTo(SIZE + 1, SIZE + 1);
-        gc.stroke();
+        GraphicsContext gc = c.getGraphicsContext2D();
 
         // Check if we need to draw anything else
         if (cell.getState() != Cell.EMPTY) {
@@ -70,10 +46,7 @@ public class CellGui extends AbstractFlatlandGui {
             }
 
             // Draw the object
-            gc.fillOval(10, 10, SIZE - 20, SIZE - 20);
+            gc.fillOval(x + 10, y + 10, SIZE - 20, SIZE - 20);
         }
-
-        // Return the entire canvas
-        return canvas;
     }
 }
