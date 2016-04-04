@@ -1,6 +1,7 @@
 package org.thomas.annea.ea;
 
 import org.thomas.annea.ea.gtype.AbstractGType;
+import org.thomas.annea.ea.gtype.Beer8BitGType;
 import org.thomas.annea.ea.gtype.BinaryGType;
 import org.thomas.annea.ea.gtype.FloatGType;
 import org.thomas.annea.tools.CrossoverHelper;
@@ -51,6 +52,9 @@ public class EA {
             AbstractGType newIndividual;
             if (settings.getGType().equals("BinaryGType")) {
                newIndividual = new BinaryGType(settings, settings.getNumberOfValues());
+            }
+            else if (settings.getGType().equals("Beer8BitGType")) {
+                newIndividual = new Beer8BitGType(settings, settings.getNumberOfValues());
             }
             else {
                 newIndividual = new FloatGType(settings, settings.getNumberOfValues());
@@ -337,6 +341,10 @@ public class EA {
             newChild1 = new BinaryGType(settings, settings.getNumberOfValues());
             newChild2 = new BinaryGType(settings, settings.getNumberOfValues());
         }
+        else if (settings.getGType().equals("Beer8BitGType")) {
+            newChild1 = new Beer8BitGType(settings, settings.getNumberOfValues());
+            newChild2 = new Beer8BitGType(settings, settings.getNumberOfValues());
+        }
         else {
             newChild1 = new FloatGType(settings, settings.getNumberOfValues());
             newChild2 = new FloatGType(settings, settings.getNumberOfValues());
@@ -369,6 +377,10 @@ public class EA {
         if (settings.getGType().equals("BinaryGType")) {
             newChild1 = new BinaryGType(settings, settings.getNumberOfValues());
             newChild2 = new BinaryGType(settings, settings.getNumberOfValues());
+        }
+        else if (settings.getGType().equals("Beer8BitGType")) {
+            newChild1 = new Beer8BitGType(settings, settings.getNumberOfValues());
+            newChild2 = new Beer8BitGType(settings, settings.getNumberOfValues());
         }
         else {
             newChild1 = new FloatGType(settings, settings.getNumberOfValues());

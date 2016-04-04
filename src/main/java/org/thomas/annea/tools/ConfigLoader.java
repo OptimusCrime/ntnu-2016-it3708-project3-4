@@ -119,14 +119,10 @@ public class ConfigLoader {
                 } catch (NumberFormatException e) {}
             }
             else if (keyword.equals("genotype")) {
-                if (value.equals("BinaryGType") || value.equals("FloatGType")) {
-                    settings.setGType(value);
-                }
+                settings.setGType(value);
             }
             else if (keyword.equals("phenotype")) {
-                if (value.equals("BinaryPType") || value.equals("ASCIIPType") || value.equals("FloatPType")) {
-                    settings.setPType(value);
-                }
+                settings.setPType(value);
             }
 
             // Some limits

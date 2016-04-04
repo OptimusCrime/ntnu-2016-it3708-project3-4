@@ -1,5 +1,6 @@
 package org.thomas.annea.solvers;
 
+import org.thomas.annea.ann.CTRNetwork;
 import org.thomas.annea.ann.Network;
 import org.thomas.annea.beer.BeerWorld;
 import org.thomas.annea.ea.EA;
@@ -27,7 +28,7 @@ public class BeerSolver extends AbstractSolver {
         beerWorld.initialize();
 
         // Create a new neural network
-        ann = new Network(settings);
+        ann = new CTRNetwork(settings);
         ann.create();
 
         // Set various things for the Flatland fitness function

@@ -1,9 +1,6 @@
 package org.thomas.annea.ea.gtype;
 
-import org.thomas.annea.ea.ptype.ASCIIPType;
-import org.thomas.annea.ea.ptype.AbstractPType;
-import org.thomas.annea.ea.ptype.BinaryPType;
-import org.thomas.annea.ea.ptype.FloatPType;
+import org.thomas.annea.ea.ptype.*;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
 public abstract class AbstractGType implements Comparable {
@@ -46,6 +43,9 @@ public abstract class AbstractGType implements Comparable {
         }
         else if (settings.getPType().equals("BinaryPType")) {
             ptype = new BinaryPType(settings, this);
+        }
+        else if (settings.getPType().equals("Beer8BitPType")) {
+            ptype = new Beer8BitPType(settings, this);
         }
         else {
             ptype = new FloatPType(settings, this);

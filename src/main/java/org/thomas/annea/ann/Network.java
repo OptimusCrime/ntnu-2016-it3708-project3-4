@@ -91,6 +91,7 @@ public class Network {
      */
 
     public void setWeights(AbstractGType individual) {
+        System.out.println(individual);
         // Get the value vector from the individual
         double[] valueVector = individual.getAsArray();
 
