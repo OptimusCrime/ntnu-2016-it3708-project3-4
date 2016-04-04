@@ -7,16 +7,16 @@ import java.lang.reflect.Method;
 public class Layer {
 
     // Number of rows in the layer
-    private int rows;
+    protected int rows;
 
     // NUmber of columns in the layer
-    private int columns;
+    protected int columns;
 
     // The weight matrix
-    private DoubleMatrix weights;
+    protected DoubleMatrix weights;
 
     // Activation function goes here
-    private String function;
+    protected String function;
 
     /**
      * Constructor for empty layer

@@ -106,23 +106,32 @@ public class Tracker extends AbstractBeerObject {
             direction = RIGHT;
         }
 
-        // TODO manitude
+        // Find the force
+        double force = Math.max(matrix.get(0, 0), matrix.get(0, 1));
+
+        int steps = 1;
+        if (force >= 0.75) {
+            steps = 4;
+        }
+        else {
+            steps = 1 + (int) (force / 0.25);
+        }
 
         // Check what direction to move in
         if (direction == LEFT) {
             // Move left
-            location--;
+            location -= steps;
 
             if (location < 0) {
-                location = 29;
+                location += 29;
             }
         }
         else {
             // Move right
-            location++;
+            location += steps;
 
             if (location > 29) {
-                location = 0;
+                location -= 29;
             }
         }
     }

@@ -249,8 +249,8 @@ public class BeerController extends AbstractController implements Initializable 
                 labelTimestep.setText(Integer.toString(runner.getTimestep()));
 
                 // Update stats
-                labelCapture.setText(Integer.toString(runner.getCapture()));
-                labelAvoidance.setText(Integer.toString(runner.getAvoidance()));
+                labelCapture.setText(Integer.toString(runner.getCapture()) + " / " + Integer.toString(runner.getOptimalCapture()));
+                labelAvoidance.setText(Integer.toString(runner.getAvoidance()) + " / " + Integer.toString(runner.getOptimalAvoidance()));
                 labelFail.setText(Integer.toString(runner.getFail()));
 
                 // Draw the tick

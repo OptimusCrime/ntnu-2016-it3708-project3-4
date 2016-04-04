@@ -10,10 +10,10 @@ import java.lang.reflect.Method;
 public class Network {
 
     // Settings
-    private AbstractSettings settings;
+    protected AbstractSettings settings;
 
     // List of layers
-    private Layer[] layers;
+    protected Layer[] layers;
 
     /**
      * Constructor

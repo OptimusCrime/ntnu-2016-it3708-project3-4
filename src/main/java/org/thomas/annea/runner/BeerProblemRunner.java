@@ -269,6 +269,9 @@ public class BeerProblemRunner extends AbstractProblemRunner {
                 // Increase the tick with 15
                 currentTick += 15;
             }
+
+            // Recent study has shown that is smart to increase this variable!
+            currentBeerObject++;
         }
 
         // Set calculate to true
