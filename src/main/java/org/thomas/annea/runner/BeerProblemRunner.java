@@ -18,6 +18,9 @@ public class BeerProblemRunner extends AbstractProblemRunner {
     private boolean removeObjectNextTick;
 
     // Stats
+    private boolean calculatedOptimal;
+    private int optimalCapture;
+    private int optimalAvoidance;
     private int capture;
     private int avoidance;
     private int fail;
@@ -37,7 +40,12 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         // Indicates if a object should be removed next tick
         removeObjectNextTick = false;
 
+        // We need to calculate optimal stuff
+        calculatedOptimal = false;
+
         // Set stats to 0
+        optimalCapture = 0;
+        optimalAvoidance = 0;
         capture = 0;
         avoidance = 0;
         fail = 0;
@@ -235,5 +243,51 @@ public class BeerProblemRunner extends AbstractProblemRunner {
 
     public void setTracker(Tracker t) {
         tracker = t;
+    }
+
+    private void calculateOptimal() {
+        int currentTick = 0;
+        int currentBeerObject = 0;
+
+        // Loop until we are done
+        while (currentTick <= 600) {
+            // Get the current object
+            BeerObject optimalCurrentObject = objects.get(currentBeerObject);
+
+            // Check the size!
+            if (optimalCurrentObject.getSize() <= 4) {
+                // Increase number of potential captures
+                optimalCapture++;
+
+                // Increase the tick with 14
+                currentTick += 14;
+            }
+            else {
+                // We should avoid this object
+                optimalAvoidance++;
+
+                // Increase the tick with 15
+                currentTick += 15;
+            }
+        }
+
+        // Set calculate to true
+        calculatedOptimal = true;
+    }
+
+    public int getOptimalCapture() {
+        if (!calculatedOptimal) {
+            calculateOptimal();
+        }
+
+        return optimalCapture;
+    }
+
+    public int getOptimalAvoidance() {
+        if (!calculatedOptimal) {
+            calculateOptimal();
+        }
+
+        return optimalAvoidance;
     }
 }

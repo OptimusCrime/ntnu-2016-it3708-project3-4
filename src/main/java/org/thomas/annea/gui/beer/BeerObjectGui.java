@@ -35,7 +35,7 @@ public class BeerObjectGui extends AbstractBeerGui {
         int width = beerObject.getSize() * OBJECTSIZE;
 
         // Colorize
-        if (beerObject.getSize() <= 5) {
+        if (beerObject.getSize() <= 4) {
             gc.setFill(Color.BLUE);
         }
         else {
