@@ -35,9 +35,23 @@ public class BeerObjectGui extends AbstractBeerGui {
         int width = beerObject.getSize() * OBJECTSIZE;
 
         // Colorize
-        gc.setFill(Color.BLUE);
+        if (beerObject.getSize() <= 5) {
+            gc.setFill(Color.BLUE);
+        }
+        else {
+            gc.setFill(Color.RED);
+        }
 
         // Draw the rect
         gc.fillRect(x, y, width, height);
+
+        // Draw lines
+        gc.setStroke(Color.BLACK);
+        gc.setLineWidth(1.0);
+        for (int i = 1; i <= beerObject.getSize(); i++) {
+            gc.moveTo(x + (i * OBJECTSIZE), y);
+            gc.lineTo(x + (i * OBJECTSIZE), y + OBJECTSIZE);
+            gc.stroke();
+        }
     }
 }
