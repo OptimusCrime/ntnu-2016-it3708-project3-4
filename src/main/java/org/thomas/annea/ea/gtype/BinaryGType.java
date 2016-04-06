@@ -35,7 +35,7 @@ public class BinaryGType extends AbstractGType {
         double[][] possibleValues = ptype.getPossibleValues();
 
         // Find out how many values we need to initialize
-        for (int i = 0; i < ptype.calculateBitSetLength(settings.getNumberOfValues()); i++) {
+        for (int i = 0; i < length; i++) {
             // Get a random possible value
             double[] randomValue = possibleValues[RandomHelper.randint(0, possibleValues.length)];
 

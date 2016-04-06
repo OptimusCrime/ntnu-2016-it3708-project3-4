@@ -63,7 +63,7 @@ public class Network {
      * @return The matrix for the weight
      */
 
-    private static DoubleMatrix phenoToMatrix(double[] values, int rows, int columns) {
+    protected static DoubleMatrix phenoToMatrix(double[] values, int rows, int columns) {
         // Create a new array for the weights
         double [][]weights = new double[rows][columns];
 

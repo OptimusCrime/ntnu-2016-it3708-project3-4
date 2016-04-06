@@ -7,7 +7,7 @@ import java.util.BitSet;
 public class Beer8BitGType extends BinaryGType {
 
     // The actual length of the geno vector
-    private static int actualLength = 0;
+    public static int actualLength = 0;
 
     /**
      * Constructor for the G-Type
@@ -21,6 +21,8 @@ public class Beer8BitGType extends BinaryGType {
         if (actualLength == 0) {
             calculateVectorLength();
         }
+
+        System.out.println(actualLength);
 
         // Initialize the (empty) BitSet
         value = new BitSet(actualLength);
@@ -47,17 +49,20 @@ public class Beer8BitGType extends BinaryGType {
             System.out.println(tempLength);
         }
 
-        // Multiply by three (gains and time constraints)
-        tempLength *= 3;
-
         // Add one for each dimension (bias)
         tempLength += networkDimensions.length;
 
-        // Finally multiply by 8
+        // To bit
         tempLength *= 8;
+
+        // Multiply by three (gains and time constraints)
+        tempLength *= 3;
 
         // Set the actual length
         actualLength = tempLength;
+
+        // Set number of values to the settings
+        settings.setNumberOfValues(actualLength);
     }
 
     /**

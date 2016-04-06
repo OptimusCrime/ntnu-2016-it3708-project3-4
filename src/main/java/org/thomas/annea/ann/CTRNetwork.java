@@ -1,9 +1,30 @@
 package org.thomas.annea.ann;
 
 
+import org.jblas.DoubleMatrix;
+import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 public class CTRNetwork extends Network {
+
+    // Weights
+    public final static double weightsMin = -5;
+    public final static double weightsMax = 5;
+
+    // Biases
+    public final static double biasMin = -10;
+    public final static double biasMax = 0;
+
+    // Gains
+    public final static double gainsMin = 1;
+    public final static double gainsMax = 5;
+
+    // Time constants
+    public final static double timeMin = 1;
+    public final static double timeMax = 2;
 
     /**
      * Constructor
@@ -43,5 +64,154 @@ public class CTRNetwork extends Network {
 
         // Set the correct output function
         layers[layers.length - 1].setFunction(functions[functions.length - 1]);
+    }
+
+    /**
+     * Scale function
+     * @param valueIn Actual value
+     * @param baseMin
+     * @param baseMax
+     * @param limitMin
+     * @param limitMax
+     * @return
+     */
+
+    public static double scale(final double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax) {
+        return ((limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin)) + limitMin;
+    }
+
+    /**
+     * Translates the G-type value to one or more weights for the network
+     * @param individual Instance of G-Type
+     */
+
+    public void setWeights(AbstractGType individual) {
+        // Get the value vector from the individual
+        double[] valueVector = individual.getAsArray();
+
+        // Get number of bytes
+        int numberOfBytes = valueVector.length / 8;
+
+        // Create empty array of doubles
+        double[] byteValues = new double[numberOfBytes];
+
+        // Populate the byte array
+        for (int i = 0; i < numberOfBytes; i++) {
+            // Create integer value array
+            double byteValue = 0;
+            for (int j = 0; j < 8; j++) {
+                if ((int) valueVector[(i * 8) + j] == 1) {
+                    byteValue += Math.pow(2, 7 - j);
+                }
+            }
+
+            // Add byte value to array
+            byteValues[i] = byteValue;
+        }
+
+        // Create various arrays for the weights, gains and the time contraints
+        int lengthArray = numberOfBytes / 3;
+        double[] weightsArray = new double[lengthArray];
+        double[] gainArray = new double[lengthArray];
+        double[] timeArray = new double[lengthArray];
+
+        // Populate each of them
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < lengthArray; j++) {
+                if (j == 0) {
+                    double scaled = scale(byteValues[(i * lengthArray) + j], 0, 265, weightsMin, weightsMax);
+                    weightsArray[j] = scaled;
+                }
+                else if (j == 1) {
+                    double scaled = scale(byteValues[(i * lengthArray) + j], 0, 265, gainsMin, gainsMax);
+                    gainArray[j] = scaled;
+                }
+                else {
+                    double scaled = scale(byteValues[(i * lengthArray) + j], 0, 265, timeMin, timeMax);
+                    timeArray[j] = scaled;
+                }
+            }
+        }
+
+        // Loop all the layers, except the last
+        int offset = 0;
+        for (int i = 0; i < layers.length - 1; i++) {
+            // Get the current layer
+            CTRLayer thisLayer = (CTRLayer) layers[i];
+
+            // Get the layer size
+            int layerSize = layers[i].getRows() * layers[i].getColumns();
+
+            // Set the translated weights for this layer
+            thisLayer.setWeights(phenoToMatrix(Arrays.copyOfRange(weightsArray, offset, offset + layerSize), layers[i].getRows(), layers[i].getColumns()));
+            thisLayer.setGains(phenoToMatrix(Arrays.copyOfRange(weightsArray, offset, offset + layerSize), layers[i].getRows(), layers[i].getColumns()));
+            thisLayer.setTimeConstraints(phenoToMatrix(Arrays.copyOfRange(weightsArray, offset, offset + layerSize), layers[i].getRows(), layers[i].getColumns()));
+
+            // Increase the offset with the current layer size
+            offset += layerSize;
+        }
+    }
+
+    /**
+     * Propagate the input through the network
+     * @param input The input values (from the sensors)
+     * @return The output matrix from the last layer in the network
+     */
+
+    public DoubleMatrix propagate(DoubleMatrix input) {
+        // Create a array to populate with the intermediate layer values
+        DoubleMatrix[] layerValues = new DoubleMatrix[layers.length + 1];
+
+        // Set the input data to the input layer
+        layerValues[0] = input;
+
+        // Propagate the train method
+        for (int i = 0; i < layers.length - 1; i++) {
+            // Cast the current layer
+            CTRLayer thisLayer = (CTRLayer) layers[i];
+
+            // Store the s value her
+            double s = 0;
+
+            // Keep track of each of the output values
+            double[] outputValues = new double[thisLayer.getRows()];
+
+            // Get the rows
+            for (int j = 0; j < thisLayer.getRows(); j++) {
+
+                // Formula one
+                for (int k = 0; k < thisLayer.getColumns() - 1; k++) {
+                    s += thisLayer.getWeight(j, k) * input.get(0, k);
+                }
+
+                // Get other lastOutputs on same layer (also takes self..
+                for (int k = 0; k < layers[i].getRows(); k++) {
+                    s += thisLayer.getLastOutput(k) * thisLayer.getOtherLayerWeight(j, k);
+                }
+
+                // Formula 2
+                double timeDerivative = (1 / thisLayer.getTimeConstraint()) * (-1 * thisLayer.getY(j) + s + 1 * thisLayer.getBias());
+
+                // Formula 3
+                double output = 1 / (1 + Math.exp(-1 * thisLayer.getGain() * thisLayer.getGain()));
+
+                // Increase the Y value
+                thisLayer.increaseY(j, timeDerivative);
+
+                // Save the output
+                outputValues[j] = output;
+            }
+
+            // Apply each output to the layer
+            for (int j = 0; j < thisLayer.getRows(); j++) {
+                thisLayer.setLastOutput(j, outputValues[j]);
+            }
+
+            // Add the layer value
+            layerValues[i + 1] = outputValues;
+        }
+
+        // Return the final output
+        return output;
     }
 }
