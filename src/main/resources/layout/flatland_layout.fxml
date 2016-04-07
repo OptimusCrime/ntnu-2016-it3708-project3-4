@@ -18,7 +18,7 @@
     <children>
         <Pane id="main" fx:id="main" prefHeight="750.0" prefWidth="750.0" style="-fx-background-color: white;">
          <children>
-            <TabPane prefHeight="787.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tabPane" prefHeight="787.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="Flatland">
                      <content>
@@ -40,7 +40,7 @@
               </tabs>
             </TabPane>
          </children></Pane>
-        <Pane prefHeight="750.0" prefWidth="350.0" style="-fx-background-color: #e0e0e0;">
+        <Pane style="-fx-background-color: #e0e0e0;">
             <children>
                 <Label layoutX="10.0" layoutY="14.0" text="Scenario: " />
                 <ChoiceBox id="choiceBoxScenario" fx:id="choiceBoxScenario" layoutX="140.0" layoutY="10.0" prefHeight="27.0" prefWidth="200.0" />

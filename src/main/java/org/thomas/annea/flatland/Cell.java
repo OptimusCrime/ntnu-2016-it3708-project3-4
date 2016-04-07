@@ -1,10 +1,10 @@
 package org.thomas.annea.flatland;
 
-import org.thomas.annea.gui.flatland.CellGui;
+import org.thomas.annea.gui.flatland.FlatlandDrawable;
 
-public class Cell extends AbstractFlatlandObject implements Cloneable {
+public class Cell implements Cloneable, FlatlandDrawable {
 
-    // Various headings
+    // Various states
     public static final int EMPTY = 0;
     public static final int FOOD = 1;
     public static final int POISON = 2;
@@ -31,10 +31,6 @@ public class Cell extends AbstractFlatlandObject implements Cloneable {
      */
 
     public Cell(int xCoor, int yCoor, int s) {
-        super(new CellGui());
-
-        // Set the gui source
-        gui.setSource(this);
 
         // Set various information
         x = xCoor;
@@ -70,6 +66,12 @@ public class Cell extends AbstractFlatlandObject implements Cloneable {
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
-        return super.clone();
+        return this.clone();
+    }
+
+    @Override
+    public int getImageIndex() {
+        // 4-Empty, 5-food, 6-poison
+        return 6 - state;
     }
 }

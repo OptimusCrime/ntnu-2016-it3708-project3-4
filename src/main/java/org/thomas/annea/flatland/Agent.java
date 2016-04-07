@@ -1,10 +1,9 @@
 package org.thomas.annea.flatland;
 
-import org.thomas.annea.gui.flatland.AgentGui;
-
 import org.jblas.DoubleMatrix;
+import org.thomas.annea.gui.flatland.FlatlandDrawable;
 
-public class Agent extends AbstractFlatlandObject {
+public class Agent implements FlatlandDrawable {
 
     // Various headings
     public static final int UP = 0;
@@ -28,11 +27,6 @@ public class Agent extends AbstractFlatlandObject {
      */
 
     public Agent(int xCoor, int yCoor, int h) {
-        super(new AgentGui());
-
-        // Set the gui source
-        gui.setSource(this);
-
         x = xCoor;
         y = yCoor;
         heading = h;
@@ -274,5 +268,11 @@ public class Agent extends AbstractFlatlandObject {
 
     public int getHeading() {
         return heading;
+    }
+
+    @Override
+    public int getImageIndex() {
+        // 0-up, 1-down, 2-left, 3-right
+        return this.heading;
     }
 }

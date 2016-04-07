@@ -14,19 +14,17 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.LineChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Paint;
 import javafx.util.Duration;
 import org.thomas.annea.ann.Network;
 import org.thomas.annea.ea.gtype.AbstractGType;
+import org.thomas.annea.flatland.Agent;
 import org.thomas.annea.flatland.Cell;
 import org.thomas.annea.flatland.Scenario;
-import org.thomas.annea.gui.flatland.AbstractFlatlandGui;
-import org.thomas.annea.gui.flatland.GridDrawer;
+import org.thomas.annea.gui.flatland.FlatlandDrawable;
 import org.thomas.annea.gui.observers.GraphHelper;
 import org.thomas.annea.runner.FlatlandProblemRunner;
 import org.thomas.annea.solvers.AbstractSolver;
@@ -48,6 +46,17 @@ public class FlatlandController extends AbstractController implements Initializa
     @FXML
     private LineChart graph;
     private GraphicsContext gc;
+
+    // Images
+    private Image[] flatlandImages;
+    
+    // Size of grid TODO: get from some kind of settings
+    private double gridSize;
+    private int grids = 10;
+
+    //Tabs
+    @FXML
+    private TabPane tabPane;
 
     //@FXML private Group group;
     @FXML
@@ -109,6 +118,22 @@ public class FlatlandController extends AbstractController implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        System.out.println(canvas.getWidth());
+        System.out.println(canvas.getHeight());
+
+        // Store grid size
+        this.gridSize = canvas.getHeight() / this.grids;
+        
+        // Load images
+        this.flatlandImages = new Image[6];
+        this.flatlandImages[0] = new Image(getClass().getResourceAsStream("/img/agent2_forward.png"));
+        this.flatlandImages[1] = new Image(getClass().getResourceAsStream("/img/agent2_backward.png"));
+        this.flatlandImages[2] = new Image(getClass().getResourceAsStream("/img/agent2_left.png"));
+        this.flatlandImages[3] = new Image(getClass().getResourceAsStream("/img/agent2_right.png"));
+        this.flatlandImages[4] = new Image(getClass().getResourceAsStream("/img/poison.png"));
+        this.flatlandImages[5] = new Image(getClass().getResourceAsStream("/img/food.png"));
+        // 6 = empty
+
         // Initialize Gui Elements
         gc = canvas.getGraphicsContext2D();
 
@@ -178,7 +203,7 @@ public class FlatlandController extends AbstractController implements Initializa
         FlatlandSolver localSolver = (FlatlandSolver) solver;
 
         // Calculate the size for each GUI object
-        AbstractFlatlandGui.SIZE = (int) ((750 - localSolver.getFlatland().getSize()) / localSolver.getFlatland().getSize());
+        this.gridSize = (int) ((750 - localSolver.getFlatland().getSize()) / localSolver.getFlatland().getSize());
 
         // Populate the dropdown
         choiceBoxOptions = FXCollections.observableArrayList();
@@ -204,6 +229,7 @@ public class FlatlandController extends AbstractController implements Initializa
         buttonGraph.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                tabPane.getSelectionModel().select(1);
                 graph();
             }
         });
@@ -354,18 +380,65 @@ public class FlatlandController extends AbstractController implements Initializa
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // Draw the grid lines
-        GridDrawer.draw(canvas);
+        drawGrid();
 
         // Get the grid
         Cell[][] grid = runner.getGrid();
+
+        // Draw all empties and edibles
         for (int y = 0; y < grid.length; y++) {
             for (int x = 0; x < grid.length; x++) {
-                grid[y][x].getGui().draw(canvas);
+                // Draw each object
+                drawObject(grid[y][x], x, y);
             }
         }
 
-        // Add the agent
-        runner.getAgent().getGui().draw(canvas);
+        // Draw the agent
+        Agent agent = runner.getAgent();
+        drawObject((FlatlandDrawable) agent, agent.getX(), agent.getY());
+    }
+
+    private void drawObject(FlatlandDrawable object, int x, int y) {
+        // Do not draw empty cells
+        if (object.getImageIndex() >= 6) return;
+
+        double upperLeftX = x * this.gridSize;
+        double upperLeftY = y * this.gridSize;
+        double width = gridSize;
+        double height = gridSize;
+
+        // Scale Agent image
+        // Vertical
+        if (object.getImageIndex() <= 1) {
+            upperLeftX -= 5;
+            width += 10;
+        }
+
+        // Horizontal
+        if (object.getImageIndex() <= 3 && object.getImageIndex() <=2){
+            upperLeftY -= 5;
+            height += 10;
+        }
+
+        // Draw the objects image
+        gc.drawImage(this.flatlandImages[object.getImageIndex()], x*this.gridSize, y*this.gridSize, this.gridSize, this.gridSize);
+
+    }
+
+    private void drawGrid() {
+        int width = (int) canvas.getWidth();
+        int height = (int) canvas.getHeight();
+
+        gc.setStroke(Paint.valueOf("#000000"));
+        gc.setLineWidth(1.0);
+        for (int x = 0; x <= width; x += this.gridSize) {
+            gc.strokeLine(x, 0, x, height);
+        }
+
+        for (int y = 0; y <= height; y += this.gridSize) {
+            gc.strokeLine(0, y, width, y);
+        }
+
     }
 
     @FXML
@@ -402,6 +475,7 @@ public class FlatlandController extends AbstractController implements Initializa
 
     @FXML
     public void buttonPlayPauseClicked(Event event) {
+        tabPane.getSelectionModel().select(0);
         // Can I has the reuse of code plx
         togglePausePlay();
     }
@@ -420,7 +494,6 @@ public class FlatlandController extends AbstractController implements Initializa
             buttonPlayPause.setText("Play");
         }
     }
-
 
 
     /**
