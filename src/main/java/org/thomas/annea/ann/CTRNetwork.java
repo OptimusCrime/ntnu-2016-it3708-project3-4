@@ -118,11 +118,11 @@ public class CTRNetwork extends Network {
         // Populate each of them
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < lengthArray; j++) {
-                if (j == 0) {
+                if (i == 0) {
                     double scaled = scale(byteValues[(i * lengthArray) + j], 0, 265, weightsMin, weightsMax);
                     weightsArray[j] = scaled;
                 }
-                else if (j == 1) {
+                else if (i == 1) {
                     double scaled = scale(byteValues[(i * lengthArray) + j], 0, 265, gainsMin, gainsMax);
                     gainArray[j] = scaled;
                 }
@@ -174,44 +174,51 @@ public class CTRNetwork extends Network {
             double s = 0;
 
             // Keep track of each of the output values
-            double[] outputValues = new double[thisLayer.getRows()];
+            DoubleMatrix outputValues = new DoubleMatrix(1, thisLayer.getColumns());
 
             // Get the rows
-            for (int j = 0; j < thisLayer.getRows(); j++) {
+            for (int j = 0; j < thisLayer.getColumns(); j++) {
 
-                // Formula one
-                for (int k = 0; k < thisLayer.getColumns() - 1; k++) {
-                    s += thisLayer.getWeight(j, k) * input.get(0, k);
+                // Formula 1
+                for (int k = 0; k < thisLayer.getRows() - 1; k++) {
+                    s += thisLayer.getWeight(k, j) * layerValues[i].get(0, k);
                 }
 
-                // Get other lastOutputs on same layer (also takes self..
-                for (int k = 0; k < layers[i].getRows(); k++) {
+                for (int k = 0; k < layers[i].getColumns(); k++) {
                     s += thisLayer.getLastOutput(k) * thisLayer.getOtherLayerWeight(j, k);
                 }
 
                 // Formula 2
                 double timeDerivative = (1 / thisLayer.getTimeConstraint()) * (-1 * thisLayer.getY(j) + s + 1 * thisLayer.getBias());
 
-                // Formula 3
-                double output = 1 / (1 + Math.exp(-1 * thisLayer.getGain() * thisLayer.getGain()));
-
                 // Increase the Y value
                 thisLayer.increaseY(j, timeDerivative);
 
-                // Save the output
-                outputValues[j] = output;
+                // Formula 3
+                double output = 1 / (1 + Math.exp(-1 * thisLayer.getGain() * thisLayer.getY(j)));
+
+                // Save output to matrix
+                outputValues.put(0, j, output);
             }
 
             // Apply each output to the layer
-            for (int j = 0; j < thisLayer.getRows(); j++) {
-                thisLayer.setLastOutput(j, outputValues[j]);
+            for (int j = 0; j < thisLayer.getColumns(); j++) {
+                thisLayer.setLastOutput(j, outputValues.get(0, j));
             }
 
             // Add the layer value
             layerValues[i + 1] = outputValues;
         }
 
+        // Reset Y
+        for (int i = 0; i < layers.length - 1; i++) {
+            // Cast the current layer
+            CTRLayer thisLayer = (CTRLayer) layers[i];
+
+            thisLayer.resetY();
+        }
+
         // Return the final output
-        return output;
+        return layerValues[layerValues.length - 2];
     }
 }

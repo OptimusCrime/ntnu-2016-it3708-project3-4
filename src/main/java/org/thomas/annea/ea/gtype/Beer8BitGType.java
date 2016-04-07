@@ -15,14 +15,12 @@ public class Beer8BitGType extends BinaryGType {
      */
 
     public Beer8BitGType(AbstractSettings s, int values) {
-        super(s, values);
+        super(s, actualLength);
 
         // See if we need to calculate the length of the vector here
         if (actualLength == 0) {
             calculateVectorLength();
         }
-
-        System.out.println(actualLength);
 
         // Initialize the (empty) BitSet
         value = new BitSet(actualLength);
@@ -46,7 +44,6 @@ public class Beer8BitGType extends BinaryGType {
         // Loop the network
         for (int i = 1; i < networkDimensions.length; i++) {
             tempLength += networkDimensions[i - 1] * networkDimensions[i];
-            System.out.println(tempLength);
         }
 
         // Add one for each dimension (bias)

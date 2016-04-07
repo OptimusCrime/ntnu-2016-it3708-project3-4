@@ -94,6 +94,12 @@ public class CTRLayer extends Layer {
         return y[i];
     }
 
+    public void resetY() {
+        for (int i = 0; i < y.length; i++) {
+            y[i] = 0;
+        }
+    }
+
     public void increaseY(int i, double value) {
         y[i] += value;
     }
