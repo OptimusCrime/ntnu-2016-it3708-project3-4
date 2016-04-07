@@ -13,9 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.chart.Axis;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -29,37 +27,49 @@ import org.thomas.annea.flatland.Cell;
 import org.thomas.annea.flatland.Scenario;
 import org.thomas.annea.gui.flatland.AbstractFlatlandGui;
 import org.thomas.annea.gui.flatland.GridDrawer;
+import org.thomas.annea.gui.observers.GraphHelper;
 import org.thomas.annea.runner.FlatlandProblemRunner;
 import org.thomas.annea.solvers.AbstractSolver;
 import org.thomas.annea.solvers.FlatlandSolver;
-import org.thomas.annea.solvers.observers.SolverObserver;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class FlatlandController extends AbstractController implements Initializable, SolverObserver {
+public class FlatlandController extends AbstractController implements Initializable, GraphHelper {
 
     // JavaFX stuff
-    @FXML private Pane main;
+    @FXML
+    private Pane main;
 
     // Canvas and Plot
-    @FXML private Canvas canvas;
-    @FXML private LineChart graph;
+    @FXML
+    private Canvas canvas;
+    @FXML
+    private LineChart graph;
     private GraphicsContext gc;
 
     //@FXML private Group group;
-    @FXML private ChoiceBox choiceBoxScenario;
-    @FXML private Slider sliderRefreshRate;
+    @FXML
+    private ChoiceBox choiceBoxScenario;
+    @FXML
+    private Slider sliderRefreshRate;
 
-    @FXML private Button buttonScenarioNew;
-    @FXML private Button buttonPlayPause;
-    @FXML private Button buttonGraph;
+    @FXML
+    private Button buttonScenarioNew;
+    @FXML
+    private Button buttonPlayPause;
+    @FXML
+    private Button buttonGraph;
 
-    @FXML private Label labelRefreshRate;
-    @FXML private Label labelTimestep;
-    @FXML private Label labelFood;
-    @FXML private Label labelPoison;
+    @FXML
+    private Label labelRefreshRate;
+    @FXML
+    private Label labelTimestep;
+    @FXML
+    private Label labelFood;
+    @FXML
+    private Label labelPoison;
 
     // Various dropdown stuff
     private int choiceBoxIndex;
@@ -79,6 +89,7 @@ public class FlatlandController extends AbstractController implements Initializa
 
     /**
      * Constructor
+     *
      * @param s Instance of Settings
      */
 
@@ -91,7 +102,8 @@ public class FlatlandController extends AbstractController implements Initializa
 
     /**
      * JavaFX black magic
-     * @param location No idea
+     *
+     * @param location  No idea
      * @param resources No idea
      */
 
@@ -136,6 +148,7 @@ public class FlatlandController extends AbstractController implements Initializa
 
     /**
      * Dynamic construct keyframes to allow for adjusting keyframe update rete
+     *
      * @return The new keyframe with the new duration
      */
 
@@ -174,8 +187,7 @@ public class FlatlandController extends AbstractController implements Initializa
             for (int i = 0; i < localSolver.getFlatland().getScenarios().size(); i++) {
                 choiceBoxOptions.add("Scenario #" + (i + 1));
             }
-        }
-        else {
+        } else {
             // Dynamic scenarios, first remove all scenarios present
             localSolver.getFlatland().clearScenarios();
 
@@ -256,6 +268,7 @@ public class FlatlandController extends AbstractController implements Initializa
 
     /**
      * Load a scenario
+     *
      * @param index Scenario index to load
      */
 
@@ -317,8 +330,7 @@ public class FlatlandController extends AbstractController implements Initializa
                 // Set button things
                 buttonPlayPause.setDisable(true);
                 buttonPlayPause.setText("Finished");
-            }
-            else {
+            } else {
                 // Update the current tick
                 labelTimestep.setText(Integer.toString(runner.getTimestep()));
 
@@ -356,7 +368,8 @@ public class FlatlandController extends AbstractController implements Initializa
         runner.getAgent().getGui().draw(canvas);
     }
 
-    @FXML @SuppressWarnings("unchecked")
+    @FXML
+    @SuppressWarnings("unchecked")
     private void buttonScenarioNewClicked(Event event) {
         FlatlandSolver localSolver = (FlatlandSolver) solver;
 
@@ -366,8 +379,7 @@ public class FlatlandController extends AbstractController implements Initializa
         // Add to dropdown
         if (localSolver.getFlatland().getSettings().getSetting("scenario_mode").equals("static")) {
             choiceBoxOptions.add("New scenario #" + localSolver.getFlatland().getScenarios().size());
-        }
-        else {
+        } else {
             choiceBoxOptions.add("New random scenario #" + localSolver.getFlatland().getScenarios().size());
         }
 
@@ -384,6 +396,7 @@ public class FlatlandController extends AbstractController implements Initializa
 
     /**
      * Toggle running state
+     *
      * @param event No idea
      */
 
@@ -400,22 +413,18 @@ public class FlatlandController extends AbstractController implements Initializa
     public void togglePausePlay() {
         running = !running;
 
-        // Update the button text
+        // Update the button textst
         if (running) {
             buttonPlayPause.setText("Pause");
-        }
-        else {
+        } else {
             buttonPlayPause.setText("Play");
         }
     }
 
 
-    // Data to be plotted on the graph
-    private double[] bestFitnesses = new double[100];
-    private double[] avgFitnesses = new double[100];
 
     /**
-     *  Observer for logging stats
+     * Observer for logging stats
      */
 
     @Override
@@ -424,34 +433,22 @@ public class FlatlandController extends AbstractController implements Initializa
         avgFitnesses[generation] = avg;
     }
 
+    // Data to be plotted on the graph
+    private double[] bestFitnesses = new double[100];
+    private double[] avgFitnesses = new double[100];
+
     /**
-     *  Used to update the graph based on the values from the observer
+     * Used to update the graph based on the values from the observer
      */
 
     @FXML
     private void graph() {
-        Axis xAxis = graph.getXAxis();
-        Axis yAxis = graph.getYAxis();
-
-        // Create plot maxes
-        XYChart.Series maxSeries = new XYChart.Series();
-        maxSeries.setName("Max");
-        for(int i = 0; i < bestFitnesses.length; i++) {
-            maxSeries.getData().add(new XYChart.Data(""+ i, bestFitnesses[i]));
-        }
-
-        // Create plot for Averages
-        XYChart.Series avgSeries = new XYChart.Series();
-        avgSeries.setName("Average");
-        for(int i = 0; i < avgFitnesses.length; i++) {
-            avgSeries.getData().add(new XYChart.Data(""+ i, avgFitnesses[i]));
-        }
-
         // Clear all previous data
         graph.getData().clear();
 
-        // Draw new data with animation
-        graph.getData().addAll(maxSeries, avgSeries);
+        // Draw graph
+        GraphHelper.populateGraph(graph, new String[]{"Max", "Average"}, bestFitnesses, avgFitnesses);
+
 
     }
 }

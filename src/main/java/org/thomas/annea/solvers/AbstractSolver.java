@@ -3,7 +3,7 @@ package org.thomas.annea.solvers;
 import org.thomas.annea.ann.Network;
 import org.thomas.annea.ea.EA;
 import org.thomas.annea.ea.gtype.AbstractGType;
-import org.thomas.annea.solvers.observers.SolverObserver;
+import org.thomas.annea.gui.observers.GraphHelper;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
 public abstract class AbstractSolver {
@@ -37,7 +37,7 @@ public abstract class AbstractSolver {
      * Solve the actual problem
      */
 
-    public void solve(SolverObserver observer) {
+    public void solve(GraphHelper observer) {
         // Initialize the EA child pool
         evoAlg.initialize(settings.getMaxChildren());
 
