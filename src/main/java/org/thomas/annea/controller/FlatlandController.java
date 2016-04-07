@@ -17,6 +17,7 @@ import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.util.Duration;
 import org.thomas.annea.ann.Network;
@@ -52,7 +53,7 @@ public class FlatlandController extends AbstractController implements Initializa
     
     // Size of grid TODO: get from some kind of settings
     private double gridSize;
-    private int grids = 10;
+    private double grids = 10;
 
     //Tabs
     @FXML
@@ -118,9 +119,6 @@ public class FlatlandController extends AbstractController implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        System.out.println(canvas.getWidth());
-        System.out.println(canvas.getHeight());
-
         // Store grid size
         this.gridSize = canvas.getHeight() / this.grids;
         
@@ -132,7 +130,6 @@ public class FlatlandController extends AbstractController implements Initializa
         this.flatlandImages[3] = new Image(getClass().getResourceAsStream("/img/agent2_right.png"));
         this.flatlandImages[4] = new Image(getClass().getResourceAsStream("/img/poison.png"));
         this.flatlandImages[5] = new Image(getClass().getResourceAsStream("/img/food.png"));
-        // 6 = empty
 
         // Initialize Gui Elements
         gc = canvas.getGraphicsContext2D();
@@ -408,20 +405,22 @@ public class FlatlandController extends AbstractController implements Initializa
         double height = gridSize;
 
         // Scale Agent image
-        // Vertical
-        if (object.getImageIndex() <= 1) {
-            upperLeftX -= 5;
-            width += 10;
-        }
+        switch (object.getImageIndex()) {
+            case 0:
+            case 1:
+                upperLeftX -= 5;
+                width += 10;
+                break;
+            case 2:
+            case 3:
+                upperLeftY -= 5;
+                height += 10;
+                break;
 
-        // Horizontal
-        if (object.getImageIndex() <= 3 && object.getImageIndex() <=2){
-            upperLeftY -= 5;
-            height += 10;
         }
 
         // Draw the objects image
-        gc.drawImage(this.flatlandImages[object.getImageIndex()], x*this.gridSize, y*this.gridSize, this.gridSize, this.gridSize);
+        gc.drawImage(this.flatlandImages[object.getImageIndex()], upperLeftX, upperLeftY, width, height);
 
     }
 
@@ -429,7 +428,7 @@ public class FlatlandController extends AbstractController implements Initializa
         int width = (int) canvas.getWidth();
         int height = (int) canvas.getHeight();
 
-        gc.setStroke(Paint.valueOf("#000000"));
+        gc.setStroke(new Color(0.8784313725, 0.8784313725, 0.8784313725, 1));
         gc.setLineWidth(1.0);
         for (int x = 0; x <= width; x += this.gridSize) {
             gc.strokeLine(x, 0, x, height);
