@@ -26,6 +26,6 @@ public class CTRLayer extends Layer {
     }
 
     public double getY() {
-
+        return 0.0;
     }
 }

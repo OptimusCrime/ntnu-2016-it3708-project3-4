@@ -1,17 +1,5 @@
 package org.thomas.annea.controller;
 
-import javafx.scene.canvas.Canvas;
-import org.thomas.annea.ann.Network;
-import org.thomas.annea.ea.gtype.AbstractGType;
-import org.thomas.annea.flatland.Cell;
-import org.thomas.annea.flatland.Scenario;
-import org.thomas.annea.gui.flatland.AbstractFlatlandGui;
-import org.thomas.annea.gui.flatland.GridDrawer;
-import org.thomas.annea.runner.FlatlandProblemRunner;
-import org.thomas.annea.solvers.AbstractSolver;
-import org.thomas.annea.solvers.FlatlandSolver;
-import org.thomas.annea.tools.settings.AbstractSettings;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
@@ -23,24 +11,50 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
-import javafx.scene.control.*;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.Axis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.XYChart;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Paint;
 import javafx.util.Duration;
+import org.thomas.annea.ann.Network;
+import org.thomas.annea.ea.gtype.AbstractGType;
+import org.thomas.annea.flatland.Cell;
+import org.thomas.annea.flatland.Scenario;
+import org.thomas.annea.gui.flatland.AbstractFlatlandGui;
+import org.thomas.annea.gui.flatland.GridDrawer;
+import org.thomas.annea.runner.FlatlandProblemRunner;
+import org.thomas.annea.solvers.AbstractSolver;
+import org.thomas.annea.solvers.FlatlandSolver;
+import org.thomas.annea.solvers.observers.SolverObserver;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class FlatlandController extends AbstractController implements Initializable {
+public class FlatlandController extends AbstractController implements Initializable, SolverObserver {
 
     // JavaFX stuff
     @FXML private Pane main;
-    @FXML private Group group;
+
+    // Canvas and Plot
+    @FXML private Canvas canvas;
+    @FXML private LineChart graph;
+    private GraphicsContext gc;
+
+    //@FXML private Group group;
     @FXML private ChoiceBox choiceBoxScenario;
     @FXML private Slider sliderRefreshRate;
 
     @FXML private Button buttonScenarioNew;
     @FXML private Button buttonPlayPause;
+    @FXML private Button buttonGraph;
 
     @FXML private Label labelRefreshRate;
     @FXML private Label labelTimestep;
@@ -83,11 +97,14 @@ public class FlatlandController extends AbstractController implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Initialize Gui Elements
+        gc = canvas.getGraphicsContext2D();
+
         // New solver
         solver = new FlatlandSolver(settings);
 
-        // Solve the problem
-        solver.solve();
+        // Solve the problem, self as observer
+        solver.solve(this);
 
         // Start the interval
         startInterval();
@@ -143,6 +160,7 @@ public class FlatlandController extends AbstractController implements Initializa
      */
 
     private void populateGui() {
+
         // Cast all the things
         FlatlandSolver localSolver = (FlatlandSolver) solver;
 
@@ -169,6 +187,14 @@ public class FlatlandController extends AbstractController implements Initializa
                 choiceBoxOptions.add("Random scenario #" + (i + 1));
             }
         }
+
+        // Graph Button
+        buttonGraph.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                graph();
+            }
+        });
 
         // Set the items
         choiceBoxScenario.setItems(choiceBoxOptions);
@@ -219,10 +245,10 @@ public class FlatlandController extends AbstractController implements Initializa
         });
 
         // For grouping everything together
-        group = new Group();
+        //group = new Group();
 
         // Add the group to the main pane
-        main.getChildren().add(group);
+        //main.getChildren().add(group);
 
         // Request focus
         main.requestFocus();
@@ -312,29 +338,22 @@ public class FlatlandController extends AbstractController implements Initializa
 
     private void draw() {
         // Clear all the children
-        group.getChildren().clear();
-
-        // Create a new canvas
-        Canvas c = new Canvas();
-        c.setWidth(750);
-        c.setHeight(750);
+        gc.setFill(Paint.valueOf("#FFFFFF"));
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // Draw the grid lines
-        GridDrawer.draw(c);
+        GridDrawer.draw(canvas);
 
         // Get the grid
         Cell[][] grid = runner.getGrid();
         for (int y = 0; y < grid.length; y++) {
             for (int x = 0; x < grid.length; x++) {
-                grid[y][x].getGui().draw(c);
+                grid[y][x].getGui().draw(canvas);
             }
         }
 
         // Add the agent
-        runner.getAgent().getGui().draw(c);
-
-        // Add the canvas
-        group.getChildren().add(c);
+        runner.getAgent().getGui().draw(canvas);
     }
 
     @FXML @SuppressWarnings("unchecked")
@@ -389,4 +408,52 @@ public class FlatlandController extends AbstractController implements Initializa
             buttonPlayPause.setText("Play");
         }
     }
+
+
+    // Data to be plotted on the graph
+    private double[] bestFitnesses = new double[100];
+    private double[] avgFitnesses = new double[100];
+
+    /**
+     *  Observer for logging stats
+     */
+
+    @Override
+    public void fireLog(int generation, double max, double avg) {
+        bestFitnesses[generation] = max;
+        avgFitnesses[generation] = avg;
+    }
+
+    /**
+     *  Used to update the graph based on the values from the observer
+     */
+
+    @FXML
+    private void graph() {
+        Axis xAxis = graph.getXAxis();
+        Axis yAxis = graph.getYAxis();
+
+        // Create plot maxes
+        XYChart.Series maxSeries = new XYChart.Series();
+        maxSeries.setName("Max");
+        for(int i = 0; i < bestFitnesses.length; i++) {
+            maxSeries.getData().add(new XYChart.Data(""+ i, bestFitnesses[i]));
+        }
+
+        // Create plot for Averages
+        XYChart.Series avgSeries = new XYChart.Series();
+        avgSeries.setName("Average");
+        for(int i = 0; i < avgFitnesses.length; i++) {
+            avgSeries.getData().add(new XYChart.Data(""+ i, avgFitnesses[i]));
+        }
+
+        // Clear all previous data
+        graph.getData().clear();
+
+        // Draw new data with animation
+        graph.getData().addAll(maxSeries, avgSeries);
+
+    }
 }
+
+

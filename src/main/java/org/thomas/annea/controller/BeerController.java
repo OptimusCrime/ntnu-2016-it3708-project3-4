@@ -85,7 +85,7 @@ public class BeerController extends AbstractController implements Initializable 
         solver = new BeerSolver(settings);
 
         // Solve the problem
-        solver.solve();
+        solver.solve(null);
 
         // Start the interval
         startInterval();

@@ -455,6 +455,45 @@ public class EA {
         System.out.println("Max = " + max + ". All time max: " + allTimeMaxFitness +  ". Avg: " + average);
     }
 
+    // Duplicate for backwars compatibility
+    public double[] getStatsValues() {
+        double sum = 0;
+        double max = 0;
+        int maxIndex = 0;
+        AbstractGType individual = null;
+
+        // Find max value and sum all the fitnesses
+        for (int i = 0; i < children.size(); i++) {
+            if (individual == null) {
+                individual = children.get(i);
+            }
+
+            // Store max
+            if (children.get(i).getFitness() > max) {
+                // Store reference to this index
+                maxIndex = i;
+
+                // Update the max value
+                max = children.get(i).getFitness();
+            }
+
+            // Sum
+            sum += children.get(i).getFitness();
+        }
+
+        // Calculate the average value for this generation
+        double average = sum / (double) children.size();
+
+        // Check if the current best is better than the all time max
+        if (max > allTimeMaxFitness) {
+            // Update the all time fitness value
+            allTimeMaxFitness = max;
+        }
+
+        // Return the stats
+        return new double[]{max, average};
+    }
+
     /**
      * Various getters
      */

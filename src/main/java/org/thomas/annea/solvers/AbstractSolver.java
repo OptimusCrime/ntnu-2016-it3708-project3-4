@@ -3,6 +3,7 @@ package org.thomas.annea.solvers;
 import org.thomas.annea.ann.Network;
 import org.thomas.annea.ea.EA;
 import org.thomas.annea.ea.gtype.AbstractGType;
+import org.thomas.annea.solvers.observers.SolverObserver;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
 public abstract class AbstractSolver {
@@ -36,7 +37,7 @@ public abstract class AbstractSolver {
      * Solve the actual problem
      */
 
-    public void solve() {
+    public void solve(SolverObserver observer) {
         // Initialize the EA child pool
         evoAlg.initialize(settings.getMaxChildren());
 
@@ -55,8 +56,16 @@ public abstract class AbstractSolver {
             // Calculate fitness
             calculateFitness(evoAlg);
 
-            // Stats n shit
+            // Print stats
             evoAlg.getStats();
+
+            if(observer != null) {
+                // Get the 0: max and 1:avg from evoAlg
+                double[] stats = evoAlg.getStatsValues();
+
+                // Broadcast the stats
+                observer.fireLog(i, stats[0], stats[1]);
+            }
         }
 
         // Store the best individual
