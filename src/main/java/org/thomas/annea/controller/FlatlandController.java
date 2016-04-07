@@ -1,17 +1,5 @@
 package org.thomas.annea.controller;
 
-import javafx.scene.canvas.Canvas;
-import org.thomas.annea.ann.Network;
-import org.thomas.annea.ea.gtype.AbstractGType;
-import org.thomas.annea.flatland.Cell;
-import org.thomas.annea.flatland.Scenario;
-import org.thomas.annea.gui.flatland.AbstractFlatlandGui;
-import org.thomas.annea.gui.flatland.GridDrawer;
-import org.thomas.annea.runner.FlatlandProblemRunner;
-import org.thomas.annea.solvers.AbstractSolver;
-import org.thomas.annea.solvers.FlatlandSolver;
-import org.thomas.annea.tools.settings.AbstractSettings;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
@@ -23,29 +11,75 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.util.Duration;
+import org.thomas.annea.ann.Network;
+import org.thomas.annea.ea.gtype.AbstractGType;
+import org.thomas.annea.flatland.Agent;
+import org.thomas.annea.flatland.Cell;
+import org.thomas.annea.flatland.Scenario;
+import org.thomas.annea.gui.flatland.FlatlandDrawable;
+import org.thomas.annea.gui.observers.GraphHelper;
+import org.thomas.annea.runner.FlatlandProblemRunner;
+import org.thomas.annea.solvers.AbstractSolver;
+import org.thomas.annea.solvers.FlatlandSolver;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class FlatlandController extends AbstractController implements Initializable {
+public class FlatlandController extends AbstractController implements Initializable, GraphHelper {
 
     // JavaFX stuff
-    @FXML private Pane main;
-    @FXML private Group group;
-    @FXML private ChoiceBox choiceBoxScenario;
-    @FXML private Slider sliderRefreshRate;
+    @FXML
+    private Pane main;
 
-    @FXML private Button buttonScenarioNew;
-    @FXML private Button buttonPlayPause;
+    // Canvas and Plot
+    @FXML
+    private Canvas canvas;
+    @FXML
+    private LineChart graph;
+    private GraphicsContext gc;
 
-    @FXML private Label labelRefreshRate;
-    @FXML private Label labelTimestep;
-    @FXML private Label labelFood;
-    @FXML private Label labelPoison;
+    // Images
+    private Image[] flatlandImages;
+    
+    // Size of grid TODO: get from some kind of settings
+    private double gridSize;
+    private double grids = 10;
+
+    //Tabs
+    @FXML
+    private TabPane tabPane;
+
+    //@FXML private Group group;
+    @FXML
+    private ChoiceBox choiceBoxScenario;
+    @FXML
+    private Slider sliderRefreshRate;
+
+    @FXML
+    private Button buttonScenarioNew;
+    @FXML
+    private Button buttonPlayPause;
+    @FXML
+    private Button buttonGraph;
+
+    @FXML
+    private Label labelRefreshRate;
+    @FXML
+    private Label labelTimestep;
+    @FXML
+    private Label labelFood;
+    @FXML
+    private Label labelPoison;
 
     // Various dropdown stuff
     private int choiceBoxIndex;
@@ -65,6 +99,7 @@ public class FlatlandController extends AbstractController implements Initializa
 
     /**
      * Constructor
+     *
      * @param s Instance of Settings
      */
 
@@ -77,17 +112,33 @@ public class FlatlandController extends AbstractController implements Initializa
 
     /**
      * JavaFX black magic
-     * @param location No idea
+     *
+     * @param location  No idea
      * @param resources No idea
      */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Store grid size
+        this.gridSize = canvas.getHeight() / this.grids;
+        
+        // Load images
+        this.flatlandImages = new Image[6];
+        this.flatlandImages[0] = new Image(getClass().getResourceAsStream("/img/agent2_forward.png"));
+        this.flatlandImages[1] = new Image(getClass().getResourceAsStream("/img/agent2_backward.png"));
+        this.flatlandImages[2] = new Image(getClass().getResourceAsStream("/img/agent2_left.png"));
+        this.flatlandImages[3] = new Image(getClass().getResourceAsStream("/img/agent2_right.png"));
+        this.flatlandImages[4] = new Image(getClass().getResourceAsStream("/img/poison.png"));
+        this.flatlandImages[5] = new Image(getClass().getResourceAsStream("/img/food.png"));
+
+        // Initialize Gui Elements
+        gc = canvas.getGraphicsContext2D();
+
         // New solver
         solver = new FlatlandSolver(settings);
 
-        // Solve the problem
-        solver.solve();
+        // Solve the problem, self as observer
+        solver.solve(this);
 
         // Start the interval
         startInterval();
@@ -119,6 +170,7 @@ public class FlatlandController extends AbstractController implements Initializa
 
     /**
      * Dynamic construct keyframes to allow for adjusting keyframe update rete
+     *
      * @return The new keyframe with the new duration
      */
 
@@ -143,11 +195,12 @@ public class FlatlandController extends AbstractController implements Initializa
      */
 
     private void populateGui() {
+
         // Cast all the things
         FlatlandSolver localSolver = (FlatlandSolver) solver;
 
         // Calculate the size for each GUI object
-        AbstractFlatlandGui.SIZE = (int) ((750 - localSolver.getFlatland().getSize()) / localSolver.getFlatland().getSize());
+        this.gridSize = (int) ((750 - localSolver.getFlatland().getSize()) / localSolver.getFlatland().getSize());
 
         // Populate the dropdown
         choiceBoxOptions = FXCollections.observableArrayList();
@@ -156,8 +209,7 @@ public class FlatlandController extends AbstractController implements Initializa
             for (int i = 0; i < localSolver.getFlatland().getScenarios().size(); i++) {
                 choiceBoxOptions.add("Scenario #" + (i + 1));
             }
-        }
-        else {
+        } else {
             // Dynamic scenarios, first remove all scenarios present
             localSolver.getFlatland().clearScenarios();
 
@@ -169,6 +221,15 @@ public class FlatlandController extends AbstractController implements Initializa
                 choiceBoxOptions.add("Random scenario #" + (i + 1));
             }
         }
+
+        // Graph Button
+        buttonGraph.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                tabPane.getSelectionModel().select(1);
+                graph();
+            }
+        });
 
         // Set the items
         choiceBoxScenario.setItems(choiceBoxOptions);
@@ -219,10 +280,10 @@ public class FlatlandController extends AbstractController implements Initializa
         });
 
         // For grouping everything together
-        group = new Group();
+        //group = new Group();
 
         // Add the group to the main pane
-        main.getChildren().add(group);
+        //main.getChildren().add(group);
 
         // Request focus
         main.requestFocus();
@@ -230,6 +291,7 @@ public class FlatlandController extends AbstractController implements Initializa
 
     /**
      * Load a scenario
+     *
      * @param index Scenario index to load
      */
 
@@ -291,8 +353,7 @@ public class FlatlandController extends AbstractController implements Initializa
                 // Set button things
                 buttonPlayPause.setDisable(true);
                 buttonPlayPause.setText("Finished");
-            }
-            else {
+            } else {
                 // Update the current tick
                 labelTimestep.setText(Integer.toString(runner.getTimestep()));
 
@@ -312,32 +373,75 @@ public class FlatlandController extends AbstractController implements Initializa
 
     private void draw() {
         // Clear all the children
-        group.getChildren().clear();
-
-        // Create a new canvas
-        Canvas c = new Canvas();
-        c.setWidth(750);
-        c.setHeight(750);
+        gc.setFill(Paint.valueOf("#FFFFFF"));
+        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
         // Draw the grid lines
-        GridDrawer.draw(c);
+        drawGrid();
 
         // Get the grid
         Cell[][] grid = runner.getGrid();
+
+        // Draw all empties and edibles
         for (int y = 0; y < grid.length; y++) {
             for (int x = 0; x < grid.length; x++) {
-                grid[y][x].getGui().draw(c);
+                // Draw each object
+                drawObject(grid[y][x], x, y);
             }
         }
 
-        // Add the agent
-        runner.getAgent().getGui().draw(c);
-
-        // Add the canvas
-        group.getChildren().add(c);
+        // Draw the agent
+        Agent agent = runner.getAgent();
+        drawObject((FlatlandDrawable) agent, agent.getX(), agent.getY());
     }
 
-    @FXML @SuppressWarnings("unchecked")
+    private void drawObject(FlatlandDrawable object, int x, int y) {
+        // Do not draw empty cells
+        if (object.getImageIndex() >= 6) return;
+
+        double upperLeftX = x * this.gridSize;
+        double upperLeftY = y * this.gridSize;
+        double width = gridSize;
+        double height = gridSize;
+
+        // Scale Agent image
+        switch (object.getImageIndex()) {
+            case 0:
+            case 1:
+                upperLeftX -= 5;
+                width += 10;
+                break;
+            case 2:
+            case 3:
+                upperLeftY -= 5;
+                height += 10;
+                break;
+
+        }
+
+        // Draw the objects image
+        gc.drawImage(this.flatlandImages[object.getImageIndex()], upperLeftX, upperLeftY, width, height);
+
+    }
+
+    private void drawGrid() {
+        int width = (int) canvas.getWidth();
+        int height = (int) canvas.getHeight();
+
+        gc.setStroke(new Color(0.8784313725, 0.8784313725, 0.8784313725, 1));
+        gc.setLineWidth(1.0);
+        for (int x = 0; x <= width; x += this.gridSize) {
+            gc.strokeLine(x, 0, x, height);
+        }
+
+        for (int y = 0; y <= height; y += this.gridSize) {
+            gc.strokeLine(0, y, width, y);
+        }
+
+    }
+
+    @FXML
+    @SuppressWarnings("unchecked")
     private void buttonScenarioNewClicked(Event event) {
         FlatlandSolver localSolver = (FlatlandSolver) solver;
 
@@ -347,8 +451,7 @@ public class FlatlandController extends AbstractController implements Initializa
         // Add to dropdown
         if (localSolver.getFlatland().getSettings().getSetting("scenario_mode").equals("static")) {
             choiceBoxOptions.add("New scenario #" + localSolver.getFlatland().getScenarios().size());
-        }
-        else {
+        } else {
             choiceBoxOptions.add("New random scenario #" + localSolver.getFlatland().getScenarios().size());
         }
 
@@ -365,11 +468,13 @@ public class FlatlandController extends AbstractController implements Initializa
 
     /**
      * Toggle running state
+     *
      * @param event No idea
      */
 
     @FXML
     public void buttonPlayPauseClicked(Event event) {
+        tabPane.getSelectionModel().select(0);
         // Can I has the reuse of code plx
         togglePausePlay();
     }
@@ -381,12 +486,43 @@ public class FlatlandController extends AbstractController implements Initializa
     public void togglePausePlay() {
         running = !running;
 
-        // Update the button text
+        // Update the button textst
         if (running) {
             buttonPlayPause.setText("Pause");
-        }
-        else {
+        } else {
             buttonPlayPause.setText("Play");
         }
     }
+
+
+    /**
+     * Observer for logging stats
+     */
+
+    @Override
+    public void fireLog(int generation, double max, double avg) {
+        bestFitnesses[generation] = max;
+        avgFitnesses[generation] = avg;
+    }
+
+    // Data to be plotted on the graph
+    private double[] bestFitnesses = new double[100];
+    private double[] avgFitnesses = new double[100];
+
+    /**
+     * Used to update the graph based on the values from the observer
+     */
+
+    @FXML
+    private void graph() {
+        // Clear all previous data
+        graph.getData().clear();
+
+        // Draw graph
+        GraphHelper.populateGraph(graph, new String[]{"Max", "Average"}, bestFitnesses, avgFitnesses);
+
+
+    }
 }
+
+
