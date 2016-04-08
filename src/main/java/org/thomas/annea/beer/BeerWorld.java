@@ -75,7 +75,7 @@ public class BeerWorld {
             int location = pair.snd;
 
             // Create a new object and add to list
-            objectList.add(new BeerObject(size, location));
+            objectList.add(new BeerObject(this, size, location));
         }
 
         // Return the list of objects
@@ -84,6 +84,6 @@ public class BeerWorld {
 
     public Tracker getTracker() {
         // Return the new tracker
-        return new Tracker(trackerLocation);
+        return new Tracker(this, trackerLocation);
     }
 }

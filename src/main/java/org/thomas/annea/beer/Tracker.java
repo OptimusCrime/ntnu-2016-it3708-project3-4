@@ -1,11 +1,15 @@
 package org.thomas.annea.beer;
 
 import org.jblas.DoubleMatrix;
+import org.thomas.annea.tools.settings.BeerSettings;
 
 public class Tracker {
 
     public static final int LEFT = 1;
     public static final int RIGHT = 2;
+
+    // Reference to beerworld
+    private BeerWorld beerWorld;
 
     // Keep track of the location
     private int location;
@@ -14,11 +18,14 @@ public class Tracker {
     private BeerObject beerObject;
 
     /**
-     *
+     * @param bw Instance of beerWorld
      * @param loc
      */
 
-    public Tracker(int loc) {
+    public Tracker(BeerWorld bw, int loc) {
+        // Reference to beerWorld
+        beerWorld = bw;
+
         // Set the tracker location
         location = loc;
     }
@@ -53,8 +60,25 @@ public class Tracker {
      */
 
     public DoubleMatrix getInput(BeerObject object) {
+        // Get beer settings
+        BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
+
+        int inputSize = 5;
+        int inputOffset = 0;
+        if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+            inputSize = 7;
+            inputOffset = 1;
+        }
+
         // Create matrix for the input values where all values are 0
-        DoubleMatrix inputValues = DoubleMatrix.zeros(1, 5);
+        DoubleMatrix inputValues = DoubleMatrix.zeros(1, inputSize);
+
+        // Check if we should add blocked to input matrix
+        if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+            if (location == 0) {
+                inputValues.put(0, 0, 1.0);
+            }
+        }
 
         // Get the current object position
         int[] currentObjectGrid = new int[object.getSize()];
@@ -77,7 +101,14 @@ public class Tracker {
 
             // Check if the value was not found
             if (found) {
-                inputValues.put(0, i, 1.0);
+                inputValues.put(0, inputOffset + i, 1.0);
+            }
+        }
+
+        // Check if we should add blocked to input matrix
+        if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+            if (location == 24) {
+                inputValues.put(0, 6, 1.0);
             }
         }
 
@@ -100,23 +131,46 @@ public class Tracker {
             direction = RIGHT;
         }
 
+        // Get beer settings
+        BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
+
+        // Get number of steps
         int steps =  (int) Math.ceil(matrix.get(0, 1) * 4);
 
-        // Check what direction to move in
+        // Apply wrap and stuff
         if (direction == LEFT) {
             // Move left
             location -= steps;
 
             if (location < 0) {
-                location += 29;
+                // Check if we should apply wrap or not
+                if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+                    // Set location to just 0
+                    location = 0;
+                }
+                else {
+                    // Apply wrap
+                    location += 29;
+                }
+
             }
         }
         else {
             // Move right
             location += steps;
 
-            if (location > 29) {
-                location -= 29;
+            // Check if we should apply wrap or not
+            if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+                // Check if location violates nowrap
+                if (location >= 24) {
+                    location = 24;
+                }
+            }
+            else {
+                // Make it possible to wrap
+                if (location > 29) {
+                    location -= 29;
+                }
             }
         }
     }
