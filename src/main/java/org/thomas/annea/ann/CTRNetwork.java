@@ -184,10 +184,6 @@ public class CTRNetwork extends Network {
                     s += thisLayer.getWeight(k, j) * layerValues[i].get(0, k);
                 }
 
-                for (int k = 0; k < layers[i].getColumns(); k++) {
-                    //s += thisLayer.getLastOutput(k) * thisLayer.getOtherLayerWeight(j, k);
-                }
-
                 // Formula 2
                 double timeDerivative = (1 / thisLayer.getTimeConstraint(j)) * ((-1 * thisLayer.getY(j)) + s);
 
@@ -199,11 +195,6 @@ public class CTRNetwork extends Network {
 
                 // Save output to matrix
                 outputValues.put(0, j, output);
-            }
-
-            // Apply each output to the layer
-            for (int j = 0; j < thisLayer.getColumns(); j++) {
-                //thisLayer.setLastOutput(j, outputValues.get(0, j));
             }
 
             // Add the layer value
