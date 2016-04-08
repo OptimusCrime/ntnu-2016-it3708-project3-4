@@ -93,23 +93,14 @@ public class Tracker {
     public void move(DoubleMatrix matrix) {
         // Find the direction to move in
         int direction;
-        if (matrix.get(0, 0) > matrix.get(0, 1)) {
+        if (matrix.get(0, 0) <= 0.5) {
             direction = LEFT;
         }
         else {
             direction = RIGHT;
         }
 
-        // Find the force
-        double force = Math.max(matrix.get(0, 0), matrix.get(0, 1));
-
-        int steps = 1;
-        if (force >= 0.75) {
-            steps = 4;
-        }
-        else {
-            steps = 1 + (int) (force / 0.25);
-        }
+        int steps =  (int) Math.ceil(matrix.get(0, 1) * 4);
 
         // Check what direction to move in
         if (direction == LEFT) {

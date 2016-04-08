@@ -43,6 +43,7 @@ public class Beer8BitGType extends BinaryGType {
 
         // Loop the network
         for (int i = 1; i < networkDimensions.length; i++) {
+            // Add size of the weights
             tempLength += networkDimensions[i - 1] * networkDimensions[i];
         }
 
@@ -69,26 +70,13 @@ public class Beer8BitGType extends BinaryGType {
 
     @Override
     public String toString() {
-        /*
         // Build G-Type representation
         StringBuilder builder = new StringBuilder();
 
-        for (int i = 0; i < length; i++) {
-            if (value.get(i)) {
-                builder.append("1");
-            }
-            else {
-                builder.append("0");
-            }
-        }
-
-        // Get the G-Type representation
-        String GTypeString = "G = [" + builder.toString() + "], ";
-
         // Get the F-Type representation
         String PTypeString = "P = " + ptype.toString() + ", ";
-        */
-        return "#" + id + " - " + fitness;
+
+        return "#" + id + " - " + PTypeString;
     }
 
 }
