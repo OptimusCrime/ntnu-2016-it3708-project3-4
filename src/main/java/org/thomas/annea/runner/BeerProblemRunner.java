@@ -19,11 +19,15 @@ public class BeerProblemRunner extends AbstractProblemRunner {
 
     // Stats
     private boolean calculatedOptimal;
+
+    private int optimalCorrect;
+    private int correct;
+    private int wrong;
+
     private int optimalCapture;
     private int optimalAvoidance;
     private int capture;
     private int avoidance;
-    private int fail;
 
     /**
      * Constructor
@@ -44,11 +48,14 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         calculatedOptimal = false;
 
         // Set stats to 0
+        optimalCorrect = 0;
+        correct = 0;
+        wrong = 0;
+
         optimalCapture = 0;
         optimalAvoidance = 0;
         capture = 0;
         avoidance = 0;
-        fail = 0;
     }
 
     /**
@@ -126,15 +133,25 @@ public class BeerProblemRunner extends AbstractProblemRunner {
                 if (hasCollision(currentObjectGrid, trackerGrid)) {
                     // Check if we have all the values present
                     if (fullCollision(currentObjectGrid, trackerGrid)) {
-                        // Increase capture
-                        capture++;
+                        // Check if indeed should capture this object or not
+                        if (currentObject.getSize() <= 4) {
+                            // We captured this object correctly!
+                            capture++;
+
+                            // Increase correct too
+                            correct++;
+                        }
+                        else {
+                            // We captured an object we should avoid
+                            wrong++;
+                        }
 
                         // Set object to be removed next tick
                         removeObjectNextTick = true;
                     }
                     else {
-                        // This is then a fail
-                        fail++;
+                        // Neither capture nor avoid, we consider this fail anyways
+                        wrong++;
 
                         // Set object to be removed next tick
                         removeObjectNextTick = true;
@@ -144,16 +161,22 @@ public class BeerProblemRunner extends AbstractProblemRunner {
             else if (currentObject.getRow() == 0) {
                 // At the bottom of the grid, here we check for avoidance or fail
                 if (!hasCollision(currentObjectGrid, trackerGrid)) {
-                    // No collision, this is a successful avoidance
-                    // TODO check size etc
-                    avoidance++;
+                    // Check if this object should have been captured or not
+                    if (currentObject.getSize() <= 4) {
+                        // We should have captured this object
+                        wrong++;
+                    }
+                    else {
+                        // We correctly avoided the object
+                        avoidance++;
+                    }
 
                     // Set object to be removed next tick
                     removeObjectNextTick = true;
                 }
                 else {
                     // This is then a fail
-                    fail++;
+                    wrong++;
 
                     // Set object to be removed next tick
                     removeObjectNextTick = true;
@@ -223,8 +246,12 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         return avoidance;
     }
 
-    public int getFail() {
-        return fail;
+    public int getCorrect() {
+        return correct;
+    }
+
+    public int getWrong() {
+        return wrong;
     }
 
     /**
@@ -274,6 +301,9 @@ public class BeerProblemRunner extends AbstractProblemRunner {
             currentBeerObject++;
         }
 
+        // Add avoidance and capture to optimal correct
+        optimalCorrect = optimalAvoidance + optimalCapture;
+
         // Set calculate to true
         calculatedOptimal = true;
     }
@@ -292,5 +322,13 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         }
 
         return optimalAvoidance;
+    }
+
+    public int getOptimalCorrect() {
+        if (!calculatedOptimal) {
+            calculateOptimal();
+        }
+
+        return optimalCorrect;
     }
 }
