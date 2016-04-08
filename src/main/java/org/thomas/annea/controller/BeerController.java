@@ -1,15 +1,5 @@
 package org.thomas.annea.controller;
 
-import javafx.scene.canvas.Canvas;
-import org.thomas.annea.ann.Network;
-import org.thomas.annea.beer.BeerObject;
-import org.thomas.annea.beer.BeerWorld;
-import org.thomas.annea.ea.gtype.AbstractGType;
-import org.thomas.annea.runner.BeerProblemRunner;
-import org.thomas.annea.solvers.AbstractSolver;
-import org.thomas.annea.solvers.BeerSolver;
-import org.thomas.annea.tools.settings.AbstractSettings;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
@@ -20,10 +10,25 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Group;
-import javafx.scene.control.*;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.util.Duration;
+import org.jblas.DoubleMatrix;
+import org.thomas.annea.ann.Network;
+import org.thomas.annea.beer.BeerObject;
+import org.thomas.annea.beer.BeerWorld;
+import org.thomas.annea.beer.Tracker;
+import org.thomas.annea.ea.gtype.AbstractGType;
+import org.thomas.annea.runner.BeerProblemRunner;
+import org.thomas.annea.solvers.AbstractSolver;
+import org.thomas.annea.solvers.BeerSolver;
+import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -31,17 +36,32 @@ import java.util.ResourceBundle;
 public class BeerController extends AbstractController implements Initializable {
 
     // JavaFX stuff
-    @FXML private Pane main;
-    @FXML private Group group;
-    @FXML private Slider sliderRefreshRate;
+    @FXML
+    private Pane main;
 
-    @FXML private Button buttonPlayPause;
+    @FXML
+    private Slider sliderRefreshRate;
 
-    @FXML private Label labelRefreshRate;
-    @FXML private Label labelTimestep;
-    @FXML private Label labelCapture;
-    @FXML private Label labelAvoidance;
-    @FXML private Label labelCorrectFail;
+    @FXML
+    private Canvas canvas;
+    private GraphicsContext gc;
+
+    @FXML
+    private Button buttonPlayPause;
+
+    @FXML
+    private Label labelRefreshRate;
+    @FXML
+    private Label labelTimestep;
+    @FXML
+    private Label labelCapture;
+    @FXML
+    private Label labelAvoidance;
+    @FXML
+    private Label labelCorrectFail;
+
+    // Size TODO: get from config
+    public final int OBJECTSIZE = 40;
 
     // Various dropdown stuff
     private int choiceBoxIndex;
@@ -61,6 +81,7 @@ public class BeerController extends AbstractController implements Initializable 
 
     /**
      * Constructor
+     *
      * @param s Instance of Settings
      */
 
@@ -73,12 +94,16 @@ public class BeerController extends AbstractController implements Initializable 
 
     /**
      * JavaFX black magic
-     * @param location No idea
+     *
+     * @param location  No idea
      * @param resources No idea
      */
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        // Grab graphics context
+        gc = canvas.getGraphicsContext2D();
+
         populateGui();
 
         // New solver
@@ -117,6 +142,7 @@ public class BeerController extends AbstractController implements Initializable 
 
     /**
      * Dynamic construct keyframes to allow for adjusting keyframe update rete
+     *
      * @return The new keyframe with the new duration
      */
 
@@ -171,12 +197,6 @@ public class BeerController extends AbstractController implements Initializable 
                 labelRefreshRate.setText(tickLength + "ms");
             }
         });
-
-        // For grouping everything together
-        group = new Group();
-
-        // Add the group to the main pane
-        main.getChildren().add(group);
 
         // Request focus
         main.requestFocus();
@@ -243,15 +263,14 @@ public class BeerController extends AbstractController implements Initializable 
                 // Set button things
                 buttonPlayPause.setDisable(true);
                 buttonPlayPause.setText("Finished");
-            }
-            else {
+            } else {
                 // Update the current tick
                 labelTimestep.setText(Integer.toString(runner.getTimestep()));
 
                 // Update stats
                 labelCapture.setText(Integer.toString(runner.getCapture()) + " / " + Integer.toString(runner.getOptimalCapture()));
                 labelAvoidance.setText(Integer.toString(runner.getAvoidance()) + " / " + Integer.toString(runner.getOptimalAvoidance()));
-                labelCorrectFail.setText(Integer.toString(runner.getCorrect())  + " / " + Integer.toString(runner.getWrong()));
+                labelCorrectFail.setText(Integer.toString(runner.getCorrect()) + " / " + Integer.toString(runner.getWrong()));
 
                 // Draw the tick
                 draw();
@@ -264,37 +283,102 @@ public class BeerController extends AbstractController implements Initializable 
      */
 
     private void draw() {
-        // Clear all the children
-        group.getChildren().clear();
+        // Clear the previous
+        gc.setFill(Paint.valueOf("#FFFFFF"));
+        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        // Create new canvas
-        Canvas c = new Canvas();
-        c.setWidth(1200);
-        c.setHeight(600);
+        // Draw grid
+        drawGrid();
 
         // Draw the current object
         BeerObject beerObject = runner.getCurrentObject();
         if (beerObject != null) {
-            // Draw the object
-            beerObject.getGui().draw(c);
+            drawObject(beerObject);
 
             // Set reference to the tracker
             runner.getTracker().setTrackerReference(beerObject);
-        }
-        else {
+        } else {
             // Empty the reference to the object for the tracker
             runner.getTracker().setTrackerReference(null);
         }
 
         // Draw the tracker
-        runner.getTracker().getGui().draw(c);
+        drawTracker(runner.getTracker());
+    }
 
-        // Add the canvas to the group
-        group.getChildren().add(c);
+    private void drawObject(BeerObject object) {
+        // Get the various locations
+        int x = object.getLocation() * OBJECTSIZE;
+        int y = (14 - object.getRow()) * OBJECTSIZE;
+        int height = OBJECTSIZE;
+        int width = object.getSize() * OBJECTSIZE;
+
+        // Colorize
+        if (object.getSize() <= 4) {
+            gc.setFill(Color.BLUE);
+        }
+        else {
+            gc.setFill(Color.RED);
+        }
+
+        // Draw the rect
+        gc.fillRoundRect(x, y, width, height, 15, 15);
+    }
+
+    private void drawTracker(Tracker tracker) {
+
+        // Draw the tracker body
+        gc.setFill(Paint.valueOf("#596c6c"));
+        int x = tracker.getLocation() * OBJECTSIZE;
+        int y = OBJECTSIZE * 14;
+        int height = OBJECTSIZE;
+        int width = OBJECTSIZE * 5;
+        gc.fillRoundRect(x, y, width, height, 15, 15);
+
+
+        // Get sensor readings
+        DoubleMatrix input = null;
+        if (tracker.getBeerObjectReference() != null) {
+            // Set the input correctly
+            input = tracker.getInput(tracker.getBeerObjectReference());
+        }
+
+        int[] trackerLocation = tracker.getTrackerLocation();
+
+        // Draw the sensors if activated
+        for (int i = 0; i < trackerLocation.length; i++) {
+            // Get some initial locations
+            int sensorX = trackerLocation[i] * OBJECTSIZE;
+            int sensorY = 14 * OBJECTSIZE;
+
+            if (input != null && (int) input.get(0, i) == 1) {
+                gc.setFill(Paint.valueOf("#dbdb4c"));
+                // Draw the oval
+                gc.fillOval(sensorX + 15, sensorY + 15, 10, 10);
+            }
+
+        }
+
+    }
+
+    private void drawGrid() {
+        double widthRatio = canvas.getWidth() / 30;
+        double heightRatio = canvas.getHeight() / 15;
+
+        gc.setStroke(Paint.valueOf("#b2d9d9"));
+        gc.setLineWidth(0.5);
+        for (double x = 0; x <= canvas.getWidth(); x += widthRatio) {
+            gc.strokeLine(x, 0, x, canvas.getHeight());
+        }
+
+        for (double y = 0; y <= canvas.getHeight(); y += heightRatio) {
+            gc.strokeLine(0, y, canvas.getWidth(), y);
+        }
     }
 
     /**
      * Toggle running state
+     *
      * @param event No idea
      */
 
@@ -314,8 +398,7 @@ public class BeerController extends AbstractController implements Initializable 
         // Update the button text
         if (running) {
             buttonPlayPause.setText("Pause");
-        }
-        else {
+        } else {
             buttonPlayPause.setText("Play");
         }
     }
