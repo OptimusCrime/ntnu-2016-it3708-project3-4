@@ -71,6 +71,10 @@ public class Layer {
         return weights;
     }
 
+    public double getWeight(int i, int j) {
+        return weights.get(i, j);
+    }
+
     /**
      * Getters for the rows and columns
      * @return Row or column value

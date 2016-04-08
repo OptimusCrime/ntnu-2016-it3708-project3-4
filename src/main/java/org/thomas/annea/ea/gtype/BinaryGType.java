@@ -19,7 +19,7 @@ public class BinaryGType extends AbstractGType {
         super(s, values);
 
         // Initialize the (empty) BitSet
-        value = new BitSet(length);
+        value = new BitSet(settings.getNumberOfValues());
 
         // Initialize and set a random value
         initialize();
@@ -35,7 +35,7 @@ public class BinaryGType extends AbstractGType {
         double[][] possibleValues = ptype.getPossibleValues();
 
         // Find out how many values we need to initialize
-        for (int i = 0; i < ptype.calculateBitSetLength(settings.getNumberOfValues()); i++) {
+        for (int i = 0; i < settings.getNumberOfValues(); i++) {
             // Get a random possible value
             double[] randomValue = possibleValues[RandomHelper.randint(0, possibleValues.length)];
 
@@ -174,7 +174,7 @@ public class BinaryGType extends AbstractGType {
         // Build G-Type representation
         StringBuilder builder = new StringBuilder();
 
-        for (int i = 0; i < length; i++) {
+        for (int i = 0; i < settings.getNumberOfValues(); i++) {
             if (value.get(i)) {
                 builder.append("1");
             }

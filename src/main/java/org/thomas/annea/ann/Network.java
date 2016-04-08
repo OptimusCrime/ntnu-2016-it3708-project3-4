@@ -63,7 +63,7 @@ public class Network {
      * @return The matrix for the weight
      */
 
-    private static DoubleMatrix phenoToMatrix(double[] values, int rows, int columns) {
+    protected static DoubleMatrix phenoToMatrix(double[] values, int rows, int columns) {
         // Create a new array for the weights
         double [][]weights = new double[rows][columns];
 
@@ -91,6 +91,7 @@ public class Network {
      */
 
     public void setWeights(AbstractGType individual) {
+        System.out.println(individual);
         // Get the value vector from the individual
         double[] valueVector = individual.getAsArray();
 
