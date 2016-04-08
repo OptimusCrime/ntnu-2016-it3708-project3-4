@@ -64,14 +64,8 @@ public class BeerFitness extends AbstractFitness {
         runner.runAll();
 
         // Calculate the score
-        int fail = runner.getFail();
-        double score = 0;
-        if (runner.getOptimalCapture() > 0) {
-            score += runner.getCapture() / (double) runner.getOptimalCapture();
-        }
-        if (runner.getOptimalAvoidance() > 0) {
-            //score += runner.getAvoidance() / (double) runner.getOptimalAvoidance();
-        }
+        double score = runner.getCorrect() / (double) runner.getOptimalCorrect();
+        int fail = runner.getWrong();
 
         // If we found poison, cripple the fitness value
         if (fail > 0) {

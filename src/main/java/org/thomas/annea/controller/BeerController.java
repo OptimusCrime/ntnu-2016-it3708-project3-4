@@ -41,7 +41,7 @@ public class BeerController extends AbstractController implements Initializable 
     @FXML private Label labelTimestep;
     @FXML private Label labelCapture;
     @FXML private Label labelAvoidance;
-    @FXML private Label labelFail;
+    @FXML private Label labelCorrectFail;
 
     // Various dropdown stuff
     private int choiceBoxIndex;
@@ -219,7 +219,7 @@ public class BeerController extends AbstractController implements Initializable 
         // Update eaten stats
         labelCapture.setText("0");
         labelAvoidance.setText("0");
-        labelFail.setText("0");
+        labelCorrectFail.setText("0 / 0");
 
         // Draw the initial frame
         draw();
@@ -251,7 +251,7 @@ public class BeerController extends AbstractController implements Initializable 
                 // Update stats
                 labelCapture.setText(Integer.toString(runner.getCapture()) + " / " + Integer.toString(runner.getOptimalCapture()));
                 labelAvoidance.setText(Integer.toString(runner.getAvoidance()) + " / " + Integer.toString(runner.getOptimalAvoidance()));
-                labelFail.setText(Integer.toString(runner.getFail()));
+                labelCorrectFail.setText(Integer.toString(runner.getCorrect())  + " / " + Integer.toString(runner.getWrong()));
 
                 // Draw the tick
                 draw();
