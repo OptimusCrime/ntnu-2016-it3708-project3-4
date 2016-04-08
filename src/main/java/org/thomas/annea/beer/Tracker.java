@@ -64,21 +64,12 @@ public class Tracker {
         BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
 
         int inputSize = 5;
-        int inputOffset = 0;
         if (beerSettings.getMode() == BeerWorld.NOWRAP) {
             inputSize = 7;
-            inputOffset = 1;
         }
 
         // Create matrix for the input values where all values are 0
         DoubleMatrix inputValues = DoubleMatrix.zeros(1, inputSize);
-
-        // Check if we should add blocked to input matrix
-        if (beerSettings.getMode() == BeerWorld.NOWRAP) {
-            if (location == 0) {
-                inputValues.put(0, 0, 1.0);
-            }
-        }
 
         // Get the current object position
         int[] currentObjectGrid = new int[object.getSize()];
@@ -101,14 +92,31 @@ public class Tracker {
 
             // Check if the value was not found
             if (found) {
-                inputValues.put(0, inputOffset + i, 1.0);
+                inputValues.put(0, i, 1.0);
             }
         }
 
         // Check if we should add blocked to input matrix
         if (beerSettings.getMode() == BeerWorld.NOWRAP) {
-            if (location == 24) {
-                inputValues.put(0, 6, 1.0);
+            if (location == 0) {
+                inputValues.put(0, 5, 1);
+                //double locationLeftDegree = (location + 1) / 15;
+                //inputValues.put(0, 5, locationLeftDegree);
+            }
+            else {
+                inputValues.put(0, 5, 1);
+            }
+        }
+
+        // Check if we should add blocked to input matrix
+        if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+            if (location == 25) {
+                inputValues.put(0, 6, 1);
+                //double locationLRightDegree = (location + 6 - 14) / 15;
+                //inputValues.put(0, 5, locationLRightDegree);
+            }
+            else {
+                //inputValues.put(0, 5, 1);
             }
         }
 
@@ -122,6 +130,22 @@ public class Tracker {
      */
 
     public void move(DoubleMatrix matrix) {
+        /*
+        int direction;
+        if (matrix.get(0, 0) <= 0.5) {
+            direction = LEFT;
+        }
+        else {
+            direction = RIGHT;
+        }
+
+        // Get beer settings
+        BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
+
+        // Get number of steps
+        int steps = (int) Math.ceil(matrix.get(0, 1) * 4);
+         */
+
         // Find the direction to move in
         int direction;
         if (matrix.get(0, 0) <= 0.5) {
@@ -135,7 +159,7 @@ public class Tracker {
         BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
 
         // Get number of steps
-        int steps =  (int) Math.ceil(matrix.get(0, 1) * 4);
+        int steps = (int) Math.ceil(matrix.get(0, 1) * 4);
 
         // Apply wrap and stuff
         if (direction == LEFT) {
@@ -162,8 +186,8 @@ public class Tracker {
             // Check if we should apply wrap or not
             if (beerSettings.getMode() == BeerWorld.NOWRAP) {
                 // Check if location violates nowrap
-                if (location >= 24) {
-                    location = 24;
+                if (location >= 25) {
+                    location = 25;
                 }
             }
             else {

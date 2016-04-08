@@ -11,8 +11,8 @@ import java.util.Arrays;
 public class CTRNetwork extends Network {
 
     // Weights
-    public final static double weightsMin = -5;
-    public final static double weightsMax = 5;
+    public final static double weightsMin = -14;
+    public final static double weightsMax = 14;
 
     // Biases
     public final static double biasMin = -10;
