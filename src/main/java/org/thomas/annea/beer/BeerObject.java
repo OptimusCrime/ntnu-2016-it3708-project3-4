@@ -1,15 +1,12 @@
 package org.thomas.annea.beer;
 
-import org.thomas.annea.gui.beer.BeerObjectGui;
-
-public class BeerObject extends AbstractBeerObject {
+public class BeerObject {
 
     private int size;
     private int location;
     private int row;
 
     public BeerObject(int s, int loc) {
-        super(new BeerObjectGui());
 
         // Set the references
         size = s;
@@ -17,9 +14,6 @@ public class BeerObject extends AbstractBeerObject {
 
         // Set row to initial value
         row = 14;
-
-        // Set the gui source
-        gui.setSource(this);
     }
 
     /**
