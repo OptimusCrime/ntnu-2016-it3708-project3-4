@@ -10,6 +10,11 @@ import java.util.List;
 
 public class BeerWorld {
 
+    // Games modes
+    public final static int STANDARD = 0;
+    public final static int PULL = 1;
+    public final static int NOWRAP = 2;
+
     // Reference to the settings
     private AbstractSettings settings;
 
