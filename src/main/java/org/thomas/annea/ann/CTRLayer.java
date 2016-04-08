@@ -44,10 +44,10 @@ public class CTRLayer extends Layer {
         super(input, output);
 
         // Set y
-        y = new double[input];
+        y = new double[output];
 
         // Store the last values
-        lastOutput = new double[input];
+        lastOutput = new double[output];
     }
 
     public void setGains(DoubleMatrix matrix) {
@@ -67,27 +67,34 @@ public class CTRLayer extends Layer {
     }
 
     public double getOtherLayerWeight(int row, int column) {
+        int values = 0;
         double value = 0;
-        for (int i = 0; i < weights.getColumns(); i++) {
+        for (int i = 0; i < weights.getColumns() - 1; i++) {
             if (i != column) {
                 value += weights.get(row, i);
+                values++;
             }
         }
 
+        if (values == 0) {
+            return 0;
+        }
+
         // Return the average
-        return value / (weights.getColumns() - 1);
+        return value / values;
     }
 
-    public double getTimeConstraint() {
-        return timeConstraints.get(0, 0);
+    public double getTimeConstraint(int i) {
+        return timeConstraints.get(0, i);
     }
 
-    public double getGain() {
-        return gains.get(0, 0);
+    public double getGain(int i) {
+        return gains.get(0, i);
     }
 
-    public double getBias() {
-        return gains.get(0, 0);
+    public double getBias(int i) {
+        return 1;
+        //return weights.get(i, weights.getColumns() - 1);
     }
 
     public double getY(int i) {
