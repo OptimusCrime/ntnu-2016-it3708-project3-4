@@ -167,6 +167,9 @@ public class BeerProblemRunner extends AbstractProblemRunner {
                         wrong++;
                     }
                     else {
+                        // Increase correct too
+                        correct++;
+                        
                         // We correctly avoided the object
                         avoidance++;
                     }
