@@ -11,8 +11,8 @@ import java.util.Arrays;
 public class CTRNetwork extends Network {
 
     // Weights
-    public final static double weightsMin = -14;
-    public final static double weightsMax = 14;
+    public final static double weightsMin = -5;
+    public final static double weightsMax = 5;
 
     // Biases
     public final static double biasMin = -10;
@@ -139,6 +139,9 @@ public class CTRNetwork extends Network {
             // Get the current layer
             CTRLayer thisLayer = (CTRLayer) layers[i];
 
+            // Reset shit
+            thisLayer.resetY();
+
             // Get the layer size
             int layerSize = layers[i].getRows() * layers[i].getColumns();
 
@@ -209,14 +212,6 @@ public class CTRNetwork extends Network {
 
             // Add the layer value
             layerValues[i + 1] = outputValues;
-        }
-
-        // Reset Y
-        for (int i = 0; i < layers.length - 1; i++) {
-            // Cast the current layer
-            CTRLayer thisLayer = (CTRLayer) layers[i];
-
-            thisLayer.resetY();
         }
 
         // Return the final output

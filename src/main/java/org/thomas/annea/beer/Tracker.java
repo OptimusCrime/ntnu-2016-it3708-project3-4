@@ -130,22 +130,6 @@ public class Tracker {
      */
 
     public void move(DoubleMatrix matrix) {
-        /*
-        int direction;
-        if (matrix.get(0, 0) <= 0.5) {
-            direction = LEFT;
-        }
-        else {
-            direction = RIGHT;
-        }
-
-        // Get beer settings
-        BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
-
-        // Get number of steps
-        int steps = (int) Math.ceil(matrix.get(0, 1) * 4);
-         */
-
         // Find the direction to move in
         int direction;
         if (matrix.get(0, 0) <= 0.5) {
