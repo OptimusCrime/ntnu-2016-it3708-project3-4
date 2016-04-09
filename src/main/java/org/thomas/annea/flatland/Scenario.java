@@ -4,6 +4,7 @@ import org.thomas.annea.tools.RandomHelper;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -102,15 +103,15 @@ public class Scenario {
      */
 
     private void placeGridState(StringBuilder builder, List<Integer> emptyCells, int state, double probability) {
-        Random r = new Random();
+        // Shuffle the list of empty cells
+        Collections.shuffle(emptyCells);
 
-        // Loop all the empty cells
-        for (int i = 0; i < emptyCells.size(); i++) {
-            // Check if we should populate this cell
-            if (r.nextDouble() <= probability) {
-                // Set the correct state here
-                builder.setCharAt(i, (char) state);
-            }
+        // Calculate how many food/poison we should add
+        int numberOfElements = (int) Math.floor(emptyCells.size() * probability);
+
+        // Loop the numberOfElements first elements and populate the cell
+        for (int i = 0; i < numberOfElements; i++) {
+            builder.setCharAt(emptyCells.get(i), (char) state);
         }
     }
 
