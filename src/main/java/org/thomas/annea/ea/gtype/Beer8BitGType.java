@@ -42,19 +42,40 @@ public class Beer8BitGType extends BinaryGType {
         int[] networkDimensions = settings.getNetworkDimensions();
 
         // Loop the network
-        for (int i = 1; i < networkDimensions.length; i++) {
-            // Add size of the weights
-            tempLength += networkDimensions[i - 1] * networkDimensions[i];
-        }
+        for (int i = 0; i < networkDimensions.length; i++) {
+            // Get the
+            int input = networkDimensions[i];
 
-        // Add one for each dimension (bias)
-        tempLength += networkDimensions.length;
+            // Get the output
+            int output;
+            if ((i + 1) == networkDimensions.length) {
+                output = networkDimensions[i];
+            }
+            else {
+                output = networkDimensions[i + 1];
+            }
+
+
+            for (int j = 0; j < output; j++) {
+                // Add feed forward
+                tempLength += input;
+
+                // Add other weights
+                tempLength += output;
+            }
+
+            // Add bias
+            tempLength += output;
+
+            // Add gains
+            tempLength += output;
+
+            // Add time
+            tempLength += output;
+        }
 
         // To bit
         tempLength *= 8;
-
-        // Multiply by three (gains and time constraints)
-        tempLength *= 3;
 
         // Set the actual length
         actualLength = tempLength;

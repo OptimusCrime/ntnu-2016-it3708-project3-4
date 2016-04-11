@@ -17,6 +17,9 @@ public class Tracker {
     // Reference for the beer object
     private BeerObject beerObject;
 
+    // Store the color
+    private String color;
+
     /**
      * @param bw Instance of beerWorld
      * @param loc
@@ -28,6 +31,9 @@ public class Tracker {
 
         // Set the tracker location
         location = loc;
+
+        // Set standard color
+        color = "#596c6c";
     }
 
     /**
@@ -99,24 +105,14 @@ public class Tracker {
         // Check if we should add blocked to input matrix
         if (beerSettings.getMode() == BeerWorld.NOWRAP) {
             if (location == 0) {
-                inputValues.put(0, 5, 1);
-                //double locationLeftDegree = (location + 1) / 15;
-                //inputValues.put(0, 5, locationLeftDegree);
-            }
-            else {
-                inputValues.put(0, 5, 1);
+                inputValues.put(0, 5, 1.0);
             }
         }
 
         // Check if we should add blocked to input matrix
         if (beerSettings.getMode() == BeerWorld.NOWRAP) {
             if (location == 25) {
-                inputValues.put(0, 6, 1);
-                //double locationLRightDegree = (location + 6 - 14) / 15;
-                //inputValues.put(0, 5, locationLRightDegree);
-            }
-            else {
-                //inputValues.put(0, 5, 1);
+                inputValues.put(0, 6, 1.0);
             }
         }
 
@@ -203,5 +199,17 @@ public class Tracker {
 
     public BeerObject getBeerObjectReference() {
         return beerObject;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void resetColor() {
+        color = "#596c6c";
+    }
+
+    public void setColor(String c) {
+        color = c;
     }
 }
