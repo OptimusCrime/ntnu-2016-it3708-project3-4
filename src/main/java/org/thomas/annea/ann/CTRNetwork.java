@@ -5,26 +5,9 @@ import org.jblas.DoubleMatrix;
 import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class CTRNetwork extends Network {
-
-    // Weights
-    public final static double weightsMin = -5;
-    public final static double weightsMax = 5;
-
-    // Biases
-    public final static double biasMin = -10;
-    public final static double biasMax = 0;
-
-    // Gains
-    public final static double gainsMin = 1;
-    public final static double gainsMax = 5;
-
-    // Time constants
-    public final static double timeMin = 1;
-    public final static double timeMax = 2;
 
     /**
      * Constructor
@@ -41,7 +24,6 @@ public class CTRNetwork extends Network {
 
     public void create() {
         int[] dimensions = settings.getNetworkDimensions();
-        String[] functions = settings.getNetworkFunctions();
 
         // Create the layer array of correct length
         layers = new CTRLayer[dimensions.length];
@@ -49,35 +31,10 @@ public class CTRNetwork extends Network {
         // Now set the correct sizes for each of the layer
         for (int i = 1; i < layers.length; i++) {
             layers[i - 1] = new CTRLayer(dimensions[i - 1], dimensions[i]);
-
-            // Set the function
-            if (functions.length >= i) {
-                layers[i - 1].setFunction(functions[i - 1]);
-            }
-            else {
-                layers[i - 1].setFunction("Sigmoid");
-            }
         }
 
         // Create output layer, which is empty
-        layers[layers.length - 1] = new CTRLayer(dimensions[dimensions.length - 1]);
-
-        // Set the correct output function
-        layers[layers.length - 1].setFunction(functions[functions.length - 1]);
-    }
-
-    /**
-     * Scale function
-     * @param valueIn Actual value
-     * @param baseMin
-     * @param baseMax
-     * @param limitMin
-     * @param limitMax
-     * @return
-     */
-
-    public static double scale(final double valueIn, final double baseMin, final double baseMax, final double limitMin, final double limitMax) {
-        return ((limitMax - limitMin) * (valueIn - baseMin) / (baseMax - baseMin)) + limitMin;
+        layers[layers.length - 1] = new CTRLayer(dimensions[dimensions.length - 1], dimensions[dimensions.length - 1]);
     }
 
     /**
@@ -93,7 +50,7 @@ public class CTRNetwork extends Network {
         int numberOfBytes = valueVector.length / 8;
 
         // Create empty array of doubles
-        double[] byteValues = new double[numberOfBytes];
+        double[] weightsArray = new double[numberOfBytes];
 
         // Populate the byte array
         for (int i = 0; i < numberOfBytes; i++) {
@@ -106,49 +63,46 @@ public class CTRNetwork extends Network {
             }
 
             // Add byte value to array
-            byteValues[i] = byteValue;
-        }
-
-        // Create various arrays for the weights, gains and the time contraints
-        int lengthArray = numberOfBytes / 3;
-        double[] weightsArray = new double[lengthArray];
-        double[] gainArray = new double[lengthArray];
-        double[] timeArray = new double[lengthArray];
-
-        // Populate each of them
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < lengthArray; j++) {
-                if (i == 0) {
-                    double scaled = scale(byteValues[(i * lengthArray) + j], 0, 265, weightsMin, weightsMax);
-                    weightsArray[j] = scaled;
-                }
-                else if (i == 1) {
-                    double scaled = scale(byteValues[(i * lengthArray) + j], 0, 265, gainsMin, gainsMax);
-                    gainArray[j] = scaled;
-                }
-                else {
-                    double scaled = scale(byteValues[(i * lengthArray) + j], 0, 265, timeMin, timeMax);
-                    timeArray[j] = scaled;
-                }
-            }
+            weightsArray[i] = byteValue;
         }
 
         // Loop all the layers, except the last
         int offset = 0;
-        for (int i = 0; i < layers.length - 1; i++) {
+        for (int i = 0; i < layers.length; i++) {
             // Get the current layer
             CTRLayer thisLayer = (CTRLayer) layers[i];
 
+            // Reset the layer
+            thisLayer.reset();
+
             // Get the layer size
-            int layerSize = layers[i].getRows() * layers[i].getColumns();
+            int input = layers[i].getRows();
+            int output = layers[i].getColumns();
+            int layerSize = input + output + 3;
 
-            // Set the translated weights for this layer
-            thisLayer.setWeights(phenoToMatrix(Arrays.copyOfRange(weightsArray, offset, offset + layerSize), layers[i].getRows(), layers[i].getColumns()));
-            thisLayer.setGains(phenoToMatrix(Arrays.copyOfRange(weightsArray, offset, offset + layerSize), layers[i].getRows(), layers[i].getColumns()));
-            thisLayer.setTimeConstraints(phenoToMatrix(Arrays.copyOfRange(weightsArray, offset, offset + layerSize), layers[i].getRows(), layers[i].getColumns()));
+            // Loop the number of outputs in this layer
+            for (int j = 0; j < output; j++) {
+                // Get all the weights for this neuron
+                double[] neuronWeights = Arrays.copyOfRange(weightsArray, offset, offset + layerSize);
 
-            // Increase the offset with the current layer size
-            offset += layerSize;
+                // Set the normal weights for this neuron
+                thisLayer.getNeurons().get(j).setWeights(Arrays.copyOfRange(neuronWeights, 0, input));
+
+                // Set bias for this neuron
+                thisLayer.getNeurons().get(j).setBias(neuronWeights[input]);
+
+                // Set layer weights
+                thisLayer.getNeurons().get(j).setOtherWeights(Arrays.copyOfRange(neuronWeights, input + 1, (output + input + 1)));
+
+                // Set gains
+                thisLayer.getNeurons().get(j).setGain(neuronWeights[neuronWeights.length - 2]);
+
+                // Set time constant
+                thisLayer.getNeurons().get(j).setTimeConstant(neuronWeights[neuronWeights.length - 1]);
+
+                // Increase the offset with the current layer size
+                offset += layerSize;
+            }
         }
     }
 
@@ -159,14 +113,11 @@ public class CTRNetwork extends Network {
      */
 
     public DoubleMatrix propagate(DoubleMatrix input) {
-        // Create a array to populate with the intermediate layer values
-        DoubleMatrix[] layerValues = new DoubleMatrix[layers.length + 1];
-
-        // Set the input data to the input layer
-        layerValues[0] = input;
+        // Store the current value
+        DoubleMatrix currentValue = input;
 
         // Propagate the train method
-        for (int i = 0; i < layers.length - 1; i++) {
+        for (int i = 0; i < layers.length; i++) {
             // Cast the current layer
             CTRLayer thisLayer = (CTRLayer) layers[i];
 
@@ -174,52 +125,48 @@ public class CTRNetwork extends Network {
             double s = 0;
 
             // Keep track of each of the output values
-            DoubleMatrix outputValues = new DoubleMatrix(1, thisLayer.getColumns());
+            DoubleMatrix outputValues = new DoubleMatrix(1, thisLayer.getNeurons().size());
 
-            // Get the rows
-            for (int j = 0; j < thisLayer.getColumns(); j++) {
+            // Get each neuron
+            for (int j = 0; j < thisLayer.getNeurons().size(); j++) {
+                // Shortcut
+                CTRNeuron currentNeuron = thisLayer.getNeurons().get(j);
 
                 // Formula 1
-                for (int k = 0; k < thisLayer.getRows() - 1; k++) {
-                    s += thisLayer.getWeight(k, j) * layerValues[i].get(0, k);
+                for (int k = 0; k < thisLayer.getRows(); k++) {
+                    s += currentNeuron.getWeight(k) * currentValue.get(0, k);
                 }
 
                 // Get interconnected values
-                for (int k = 0; k < thisLayer.getColumns() - 1; k++) {
-                    s += thisLayer.getLastOutput(k) * thisLayer.getOtherLayerWeight(k);
+                for (int k = 0; k < thisLayer.getNeurons().size(); k++) {
+                    s += thisLayer.getNeurons().get(k).getLastOutput() * currentNeuron.getOtherWeight(k);
                 }
 
                 // Formula 2
-                double timeDerivative = (1 / thisLayer.getTimeConstraint(j)) * ((-1 * thisLayer.getY(j)) + s);
+                double timeDerivative = (1 / currentNeuron.getTimeConstant()) * (-1 * currentNeuron.getY() + s + 1 * currentNeuron.getBias());
 
                 // Increase the Y value
-                thisLayer.increaseY(j, timeDerivative);
+                currentNeuron.increaseY(timeDerivative);
 
                 // Formula 3
-                double output = 1 / (1 + Math.exp(-1 * thisLayer.getGain(j) * thisLayer.getY(j)));
+                double output = 1 / (1 + Math.exp(-1 * currentNeuron.getGain() * currentNeuron.getY()));
+
+
 
                 // Save output to matrix
                 outputValues.put(0, j, output);
             }
 
             // Update last output
-            for (int j = 0; j < thisLayer.getColumns(); j++) {
-                thisLayer.setLastOutputs(j, outputValues.get(0, j));
+            for (int j = 0; j < thisLayer.getNeurons().size(); j++) {
+                thisLayer.getNeurons().get(j).setLastOutput(outputValues.get(0, j));
             }
 
-            // Add the layer value
-            layerValues[i + 1] = outputValues;
-        }
-
-        // Reset Y
-        for (int i = 0; i < layers.length - 1; i++) {
-            // Cast the current layer
-            CTRLayer thisLayer = (CTRLayer) layers[i];
-
-            thisLayer.resetY();
+            // Update the current matrix
+            currentValue = outputValues;
         }
 
         // Return the final output
-        return layerValues[layerValues.length - 2];
+        return currentValue;
     }
 }

@@ -5,6 +5,7 @@ import org.thomas.annea.beer.BeerWorld;
 import org.thomas.annea.ea.EA;
 import org.thomas.annea.ea.gtype.AbstractGType;
 import org.thomas.annea.runner.BeerProblemRunner;
+import org.thomas.annea.tools.settings.BeerSettings;
 
 import java.util.ArrayList;
 
@@ -63,10 +64,29 @@ public class BeerFitness extends AbstractFitness {
         // Run the entire scenario
         runner.runAll();
 
-        // Calculate the score
-        double capture = (runner.getCapture() / (double) runner.getOptimalCapture()) * 0.5;
-        double avoid = (runner.getAvoidance() / (double) runner.getOptimalAvoidance()) * 0.5;
-        return capture + avoid;
+        // Get BeerSettings
+        BeerSettings beerSetting = (BeerSettings) beerWorld.getSettings();
+
+        // Check what fitness to apply
+        if (beerSetting.getMode() == BeerWorld.STANDARD) {
+            // Standard fitness
+            double capture = (runner.getCapture() / (double) runner.getOptimalCapture()) * 0.5;
+            double avoid = (runner.getAvoidance() / (double) runner.getOptimalAvoidance()) * 0.25;
+            double correct = (runner.getCorrect() / (double) runner.getOptimalCorrect()) * 0.25;
+            return runner.getCorrect() / (double) runner.getOptimalCorrect();
+            //return capture + avoid + correct;
+        }
+        else if (beerSetting.getMode() == BeerWorld.NOWRAP) {
+            // No-wrap fitness
+            double capture = (runner.getCapture() / (double) runner.getOptimalCapture()) * 0.9;
+            double avoid = (runner.getAvoidance() / (double) runner.getOptimalAvoidance()) * 0.0;
+            return capture + avoid;
+        }
+        else {
+            // Pull fitness
+            return 0;
+        }
+
     }
 
     /**

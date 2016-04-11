@@ -2,7 +2,13 @@ package org.thomas.annea.tools.settings;
 
 public class BeerSettings extends AbstractSettings {
 
-    /**
-     * This is redundant, but hey, nice project structure
-     */
+    private int mode = 1;
+
+    public void setMode(int value) {
+        mode = value;
+    }
+
+    public int getMode() {
+        return mode;
+    }
 }

@@ -1,11 +1,15 @@
 package org.thomas.annea.beer;
 
 import org.jblas.DoubleMatrix;
+import org.thomas.annea.tools.settings.BeerSettings;
 
 public class Tracker {
 
     public static final int LEFT = 1;
     public static final int RIGHT = 2;
+
+    // Reference to beerworld
+    private BeerWorld beerWorld;
 
     // Keep track of the location
     private int location;
@@ -13,14 +17,23 @@ public class Tracker {
     // Reference for the beer object
     private BeerObject beerObject;
 
+    // Store the color
+    private String color;
+
     /**
-     *
+     * @param bw Instance of beerWorld
      * @param loc
      */
 
-    public Tracker(int loc) {
+    public Tracker(BeerWorld bw, int loc) {
+        // Reference to beerWorld
+        beerWorld = bw;
+
         // Set the tracker location
         location = loc;
+
+        // Set standard color
+        color = "#596c6c";
     }
 
     /**
@@ -53,8 +66,16 @@ public class Tracker {
      */
 
     public DoubleMatrix getInput(BeerObject object) {
+        // Get beer settings
+        BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
+
+        int inputSize = 5;
+        if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+            inputSize = 7;
+        }
+
         // Create matrix for the input values where all values are 0
-        DoubleMatrix inputValues = DoubleMatrix.zeros(1, 5);
+        DoubleMatrix inputValues = DoubleMatrix.zeros(1, inputSize);
 
         // Get the current object position
         int[] currentObjectGrid = new int[object.getSize()];
@@ -81,6 +102,20 @@ public class Tracker {
             }
         }
 
+        // Check if we should add blocked to input matrix
+        if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+            if (location == 0) {
+                inputValues.put(0, 5, 1.0);
+            }
+        }
+
+        // Check if we should add blocked to input matrix
+        if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+            if (location == 25) {
+                inputValues.put(0, 6, 1.0);
+            }
+        }
+
         // Return the input values
         return inputValues;
     }
@@ -100,23 +135,46 @@ public class Tracker {
             direction = RIGHT;
         }
 
-        int steps =  (int) Math.ceil(matrix.get(0, 1) * 4);
+        // Get beer settings
+        BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
 
-        // Check what direction to move in
+        // Get number of steps
+        int steps = (int) Math.ceil(matrix.get(0, 1) * 4);
+
+        // Apply wrap and stuff
         if (direction == LEFT) {
             // Move left
             location -= steps;
 
             if (location < 0) {
-                location += 29;
+                // Check if we should apply wrap or not
+                if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+                    // Set location to just 0
+                    location = 0;
+                }
+                else {
+                    // Apply wrap
+                    location += 29;
+                }
+
             }
         }
         else {
             // Move right
             location += steps;
 
-            if (location > 29) {
-                location -= 29;
+            // Check if we should apply wrap or not
+            if (beerSettings.getMode() == BeerWorld.NOWRAP) {
+                // Check if location violates nowrap
+                if (location >= 25) {
+                    location = 25;
+                }
+            }
+            else {
+                // Make it possible to wrap
+                if (location > 29) {
+                    location -= 29;
+                }
             }
         }
     }
@@ -141,5 +199,17 @@ public class Tracker {
 
     public BeerObject getBeerObjectReference() {
         return beerObject;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void resetColor() {
+        color = "#596c6c";
+    }
+
+    public void setColor(String c) {
+        color = c;
     }
 }

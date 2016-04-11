@@ -68,7 +68,7 @@ public class BeerController extends AbstractController implements Initializable 
     private ObservableList choiceBoxOptions;
 
     // Length of each tick
-    private static int tickLength = 200;
+    private static int tickLength = 30;
 
     // Reference to the solver
     private AbstractSolver solver;
@@ -168,7 +168,7 @@ public class BeerController extends AbstractController implements Initializable 
 
     private void populateGui() {
         // Set various slider things
-        sliderRefreshRate.setMin(100);
+        sliderRefreshRate.setMin(10);
         sliderRefreshRate.setMax(1000);
         sliderRefreshRate.setValue(tickLength);
 
@@ -326,14 +326,18 @@ public class BeerController extends AbstractController implements Initializable 
     }
 
     private void drawTracker(Tracker tracker) {
-
         // Draw the tracker body
-        gc.setFill(Paint.valueOf("#596c6c"));
+        gc.setFill(Paint.valueOf(tracker.getColor()));
         int x = tracker.getLocation() * OBJECTSIZE;
         int y = OBJECTSIZE * 14;
         int height = OBJECTSIZE;
         int width = OBJECTSIZE * 5;
         gc.fillRoundRect(x, y, width, height, 15, 15);
+
+        if (tracker.getLocation() > 25) {
+            int trackerWrapWidth = (tracker.getLocation() - 25) * OBJECTSIZE;
+            gc.fillRoundRect(0, y, trackerWrapWidth, height, 15, 15);
+        }
 
 
         // Get sensor readings
@@ -356,9 +360,7 @@ public class BeerController extends AbstractController implements Initializable 
                 // Draw the oval
                 gc.fillOval(sensorX + 15, sensorY + 15, 10, 10);
             }
-
         }
-
     }
 
     private void drawGrid() {

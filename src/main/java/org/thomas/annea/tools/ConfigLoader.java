@@ -1,5 +1,6 @@
 package org.thomas.annea.tools;
 
+import org.thomas.annea.beer.BeerWorld;
 import org.thomas.annea.tools.settings.AbstractSettings;
 import org.thomas.annea.tools.settings.BeerSettings;
 import org.thomas.annea.tools.settings.FlatlandSettings;
@@ -191,7 +192,20 @@ public class ConfigLoader {
                 } catch (NumberFormatException e) {}
             }
 
-            // Network and Flatland stuff
+            // Network, Flatland and Beer stuff
+            else if (keyword.equals("mode")) {
+                BeerSettings beerSettings = (BeerSettings) settings;
+
+                if (value.equals("standard")) {
+                    beerSettings.setMode(BeerWorld.STANDARD);
+                }
+                else if (value.equals("pull")) {
+                    beerSettings.setMode(BeerWorld.PULL);
+                }
+                else if (value.equals("nowrap")) {
+                    beerSettings.setMode(BeerWorld.NOWRAP);
+                }
+            }
             else if (keyword.equals("network_dimensions")) {
                 String[] networkDimensionsSplit = value.split(",");
                 List<Integer> networkDimensionsClean = new ArrayList<>();

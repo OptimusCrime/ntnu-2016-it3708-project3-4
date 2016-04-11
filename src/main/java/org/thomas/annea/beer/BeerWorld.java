@@ -10,6 +10,11 @@ import java.util.List;
 
 public class BeerWorld {
 
+    // Games modes
+    public final static int STANDARD = 0;
+    public final static int PULL = 1;
+    public final static int NOWRAP = 2;
+
     // Reference to the settings
     private AbstractSettings settings;
 
@@ -70,7 +75,7 @@ public class BeerWorld {
             int location = pair.snd;
 
             // Create a new object and add to list
-            objectList.add(new BeerObject(size, location));
+            objectList.add(new BeerObject(this, size, location));
         }
 
         // Return the list of objects
@@ -79,6 +84,6 @@ public class BeerWorld {
 
     public Tracker getTracker() {
         // Return the new tracker
-        return new Tracker(trackerLocation);
+        return new Tracker(this, trackerLocation);
     }
 }

@@ -83,6 +83,9 @@ public class BeerProblemRunner extends AbstractProblemRunner {
             return false;
         }
 
+        // Reset tracker color
+        tracker.resetColor();
+
         // We are not done running, increase the current timestep
         timestep++;
 
@@ -114,7 +117,7 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         }
 
         // Check if we should check for capture/avoidance/fail
-        if (currentObject.getRow() <= 1) {
+        if (currentObject != null && currentObject.getRow() == 0) {
             // Get the current object position
             int[] currentObjectGrid = new int[currentObject.getSize()];
             for (int i = 0; i < currentObjectGrid.length; i++) {
@@ -127,64 +130,60 @@ public class BeerProblemRunner extends AbstractProblemRunner {
                 trackerGrid[i] = tracker.getLocation() + i;
             }
 
-            // Handle different scenarios
-            if (currentObject.getRow() == 1) {
-                // Check if the objects are anywhere near each other
-                if (hasCollision(currentObjectGrid, trackerGrid)) {
-                    // Check if we have all the values present
-                    if (fullCollision(currentObjectGrid, trackerGrid)) {
-                        // Check if indeed should capture this object or not
-                        if (currentObject.getSize() <= 4) {
-                            // We captured this object correctly!
-                            capture++;
 
-                            // Increase correct too
-                            correct++;
-                        }
-                        else {
-                            // We captured an object we should avoid
-                            wrong++;
-                        }
-
-                        // Set object to be removed next tick
-                        removeObjectNextTick = true;
-                    }
-                    else {
-                        // Neither capture nor avoid, we consider this fail anyways
-                        wrong++;
-
-                        // Set object to be removed next tick
-                        removeObjectNextTick = true;
-                    }
-                }
-            }
-            else if (currentObject.getRow() == 0) {
-                // At the bottom of the grid, here we check for avoidance or fail
-                if (!hasCollision(currentObjectGrid, trackerGrid)) {
+            // At the bottom of the grid, here we check for avoidance or fail
+            if (hasCollision(currentObjectGrid, trackerGrid)) {
+                if (fullCollision(currentObjectGrid, trackerGrid)) {
                     // Check if this object should have been captured or not
                     if (currentObject.getSize() <= 4) {
-                        // We should have captured this object
-                        wrong++;
+                        // Increase correct
+                        correct++;
+
+                        // Increase capture
+                        capture++;
+
+                        // Set the color
+                        tracker.setColor("#3c763d");
                     }
                     else {
-                        // Increase correct too
-                        correct++;
-                        
-                        // We correctly avoided the object
-                        avoidance++;
-                    }
+                        // This is wrong
+                        wrong++;
 
-                    // Set object to be removed next tick
-                    removeObjectNextTick = true;
+                        // Set the color
+                        tracker.setColor("#a94442");
+                    }
                 }
                 else {
-                    // This is then a fail
+                    // God damnit, neither
                     wrong++;
 
-                    // Set object to be removed next tick
-                    removeObjectNextTick = true;
+                    // Set the color
+                    tracker.setColor("#a94442");
                 }
             }
+            else {
+                // Check if this object should have been captured or not
+                if (currentObject.getSize() <= 4) {
+                    // We should have captured this object
+                    wrong++;
+
+                    // Set the color
+                    tracker.setColor("#a94442");
+                }
+                else {
+                    // Increase correct too
+                    correct++;
+
+                    // We correctly avoided the object
+                    avoidance++;
+
+                    // Set the color
+                    tracker.setColor("#3c763d");
+                }
+            }
+
+            // Set object to be removed next tick
+            removeObjectNextTick = true;
         }
 
         // Tick was ran successfully
