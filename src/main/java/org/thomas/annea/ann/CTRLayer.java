@@ -13,6 +13,9 @@ public class CTRLayer extends Layer {
     // Array of y values
     private double[] y;
 
+    // Array of last outputs
+    private double[] lastOutputs;
+
     /**
      * Constructor for empty layer
      * @param output Ouput size
@@ -23,6 +26,9 @@ public class CTRLayer extends Layer {
         
         // Set y
         y = new double[output];
+
+        // Last outputs
+        lastOutputs = new double[output];
     }
 
     /**
@@ -36,6 +42,25 @@ public class CTRLayer extends Layer {
 
         // Set y
         y = new double[output];
+
+        // Last outputs
+        lastOutputs = new double[output];
+    }
+
+    public double getLastOutput(int index) {
+        return lastOutputs[index];
+    }
+
+    public void setLastOutputs(int index, double value) {
+        lastOutputs[index] = value;
+    }
+
+    public double getOtherLayerWeight(int column) {
+        double value = 0;
+        for (int i = 0; i < weights.getRows(); i++) {
+            value += weights.get(i, column);
+        }
+        return value / (double) weights.getRows();
     }
 
     public void setGains(DoubleMatrix matrix) {
