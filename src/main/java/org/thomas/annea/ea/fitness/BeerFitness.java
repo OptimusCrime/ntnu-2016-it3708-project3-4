@@ -73,8 +73,8 @@ public class BeerFitness extends AbstractFitness {
             double capture = (runner.getCapture() / (double) runner.getOptimalCapture()) * 0.5;
             double avoid = (runner.getAvoidance() / (double) runner.getOptimalAvoidance()) * 0.25;
             double correct = (runner.getCorrect() / (double) runner.getOptimalCorrect()) * 0.25;
-            return runner.getCorrect() / (double) runner.getOptimalCorrect();
-            //return capture + avoid + correct;
+            //return runner.getCorrect() / (double) runner.getOptimalCorrect();
+            return capture + avoid + correct;
         }
         else if (beerSetting.getMode() == BeerWorld.NOWRAP) {
             // No-wrap fitness

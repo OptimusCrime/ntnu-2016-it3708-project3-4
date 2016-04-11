@@ -5,6 +5,7 @@ import org.thomas.annea.ann.Network;
 import org.thomas.annea.beer.BeerWorld;
 import org.thomas.annea.ea.EA;
 import org.thomas.annea.ea.fitness.BeerFitness;
+import org.thomas.annea.gui.observers.GraphHelper;
 import org.thomas.annea.tools.settings.AbstractSettings;
 
 public class BeerSolver extends AbstractSolver {
@@ -34,6 +35,49 @@ public class BeerSolver extends AbstractSolver {
         // Set various things for the Flatland fitness function
         BeerFitness.setBeerWorld(beerWorld);
         BeerFitness.setNetwork(ann);
+    }
+
+    /**
+     * Solve the actual problem
+     */
+
+    @Override
+    public void solve(GraphHelper observer) {
+        // Initialize the EA child pool
+        evoAlg.initialize(settings.getMaxChildren());
+
+        for (int i = 0; i < settings.getMaxGenerations(); i++) {
+            System.out.println("========= Generation #" + (i + 1) + " =========");
+
+            // Generate a new beerworld
+            beerWorld.generate();
+
+            // Calculate fitness
+            calculateFitness(evoAlg);
+
+            // Do adult selection
+            evoAlg.adultSelection();
+
+            // Do parent selection
+            evoAlg.parentSelection();
+
+            // Calculate fitness
+            calculateFitness(evoAlg);
+
+            // Print stats
+            evoAlg.getStats();
+
+            if(observer != null) {
+                // Get the 0: max and 1:avg from evoAlg
+                double[] stats = evoAlg.getStatsValues();
+
+                // Broadcast the stats
+                observer.fireLog(i, stats[0], stats[1]);
+            }
+        }
+
+        // Store the best individual
+        bestIndividual = evoAlg.getBest();
     }
 
     /**

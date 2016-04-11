@@ -221,6 +221,9 @@ public class BeerController extends AbstractController implements Initializable 
         BeerSolver localSolver = (BeerSolver) solver;
         BeerWorld beerWorld = localSolver.getBeerWorld();
 
+        // Generate a new world
+        beerWorld.generate();
+
         // Set up the network
         Network ann = solver.getNetwork();
 

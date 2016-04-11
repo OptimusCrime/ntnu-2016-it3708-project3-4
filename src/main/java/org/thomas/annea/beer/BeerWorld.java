@@ -57,6 +57,14 @@ public class BeerWorld {
         trackerLocation = RandomHelper.randint(0, 25);
     }
 
+    /**
+     * Redirect
+     */
+
+    public void generate() {
+        initialize();
+    }
+
     public AbstractSettings getSettings() {
         return settings;
     }
