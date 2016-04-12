@@ -20,17 +20,21 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.util.Duration;
 import org.jblas.DoubleMatrix;
-import org.thomas.annea.ann.Network;
+import org.thomas.annea.ann.*;
 import org.thomas.annea.beer.BeerObject;
 import org.thomas.annea.beer.BeerWorld;
 import org.thomas.annea.beer.Tracker;
 import org.thomas.annea.ea.gtype.AbstractGType;
+import org.thomas.annea.runner.AbstractProblemRunner;
 import org.thomas.annea.runner.BeerProblemRunner;
 import org.thomas.annea.solvers.AbstractSolver;
 import org.thomas.annea.solvers.BeerSolver;
 import org.thomas.annea.tools.settings.AbstractSettings;
+import org.thomas.annea.tools.settings.BeerSettings;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class BeerController extends AbstractController implements Initializable {
@@ -112,6 +116,9 @@ public class BeerController extends AbstractController implements Initializable 
         // Solve the problem
         solver.solve(null);
 
+        // Print stats
+        // printStats(solver);
+
         // Start the interval
         startInterval();
 
@@ -120,6 +127,46 @@ public class BeerController extends AbstractController implements Initializable 
 
         // Load the first scenario
         loadWorld();
+    }
+
+    private void printStats(AbstractSolver solver) {
+        CTRNetwork network = (CTRNetwork) solver.getNetwork();
+        Layer[] layers = network.getLayers();
+
+        for (int i = 0; i < layers.length; i++) {
+            CTRLayer thisLayer = (CTRLayer) layers[i];
+            System.out.println("Layer #" + i);
+            System.out.println(thisLayer.getRows() + ", " + thisLayer.getColumns());
+            System.out.println("");
+
+            List<CTRNeuron> neurons = thisLayer.getNeurons();
+            for (int j = 0; j < neurons.size(); j++) {
+                System.out.println("Neuron " + j);
+                System.out.println("Weights: ");
+                double[] weights = neurons.get(j).getWeights();
+                for (int k = 0; k < weights.length; k++) {
+                    System.out.println(weights[k]);
+                }
+
+                double bias = neurons.get(j).getBias();
+                System.out.println("Bias: " + bias);
+
+                System.out.println("Other weights: ");
+                double[] otherWeights = neurons.get(j).getOtherWeights();
+                for (int k = 0; k < otherWeights.length; k++) {
+                    System.out.println(otherWeights[k]);
+                }
+
+                double gain = neurons.get(j).getGain();
+                System.out.println("Gain: " + gain);
+
+                double timeConstant = neurons.get(j).getTimeConstant();
+                System.out.println("Time constant: " + timeConstant);
+            }
+        }
+
+        System.out.println("-----");
+
     }
 
     /**
@@ -266,13 +313,21 @@ public class BeerController extends AbstractController implements Initializable 
                 // Set button things
                 buttonPlayPause.setDisable(true);
                 buttonPlayPause.setText("Finished");
-            } else {
+            }
+            else {
                 // Update the current tick
                 labelTimestep.setText(Integer.toString(runner.getTimestep()));
 
                 // Update stats
-                labelCapture.setText(Integer.toString(runner.getCapture()) + " / " + Integer.toString(runner.getOptimalCapture()));
-                labelAvoidance.setText(Integer.toString(runner.getAvoidance()) + " / " + Integer.toString(runner.getOptimalAvoidance()));
+                BeerSettings beerSettings = (BeerSettings) settings;
+                if (beerSettings.getMode() == BeerWorld.PULL) {
+                    labelCapture.setText(Integer.toString(runner.getCapture()));
+                    labelAvoidance.setText(Integer.toString(runner.getAvoidance()));
+                }
+                else {
+                    labelCapture.setText(Integer.toString(runner.getCapture()) + " / " + Integer.toString(runner.getOptimalCapture()));
+                    labelAvoidance.setText(Integer.toString(runner.getAvoidance()) + " / " + Integer.toString(runner.getOptimalAvoidance()));
+                }
                 labelCorrectFail.setText(Integer.toString(runner.getCorrect()) + " / " + Integer.toString(runner.getWrong()));
 
                 // Draw the tick

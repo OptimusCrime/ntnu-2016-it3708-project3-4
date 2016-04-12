@@ -263,14 +263,6 @@ public class ConfigLoader {
                 } catch (NumberFormatException e) {}
             }
 
-            // Visuals
-            else if (keyword.equals("demo")) {
-                settings.setDemo(value.equals("yes"));
-            }
-            else if (keyword.equals("plot")) {
-                settings.setPlot(value.equals("yes"));
-            }
-
             // Other Settings
             else if (keyword.length() > 8 && keyword.substring(0, 9).equals("settings_")) {
                 String settingsKeyword = keyword.substring(9);

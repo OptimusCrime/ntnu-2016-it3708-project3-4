@@ -30,6 +30,10 @@ public class BeerObject {
         row--;
     }
 
+    public void pull() {
+        row = 0;
+    }
+
     public int getSize() {
         return size;
     }

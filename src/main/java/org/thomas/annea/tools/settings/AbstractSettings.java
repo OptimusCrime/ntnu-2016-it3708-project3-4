@@ -27,9 +27,6 @@ public abstract class AbstractSettings {
     protected String[] networkFuctions;
     protected int maxTimesteps = 10;
 
-    protected boolean demo = true;
-    protected boolean plot = false;
-
     protected int probabilityMutation = 5;
     protected int probabilityDoubleCrossover = 50;
     protected int probabilityCrossoverRate = 20;
@@ -86,13 +83,6 @@ public abstract class AbstractSettings {
     }
     public void setMaxTimesteps(int max) {
         maxTimesteps = max;
-    }
-
-    public void setDemo(boolean b) {
-        demo = b;
-    }
-    public void setPlot(boolean b) {
-        plot = b;
     }
 
     public void setProbabilityMutation(int percent) {
@@ -165,13 +155,6 @@ public abstract class AbstractSettings {
     }
     public int getMaxTimesteps() {
         return maxTimesteps;
-    }
-
-    public boolean demo() {
-        return demo;
-    }
-    public boolean plot() {
-        return plot;
     }
 
     public int getProbabilityMutation() {

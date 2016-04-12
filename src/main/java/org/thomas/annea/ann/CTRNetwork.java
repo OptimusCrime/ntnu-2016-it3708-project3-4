@@ -169,4 +169,8 @@ public class CTRNetwork extends Network {
         // Return the final output
         return currentValue;
     }
+
+    public Layer[] getLayers() {
+        return layers;
+    }
 }

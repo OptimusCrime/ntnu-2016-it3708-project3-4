@@ -8,12 +8,15 @@ import org.thomas.annea.runner.BeerProblemRunner;
 import org.thomas.annea.tools.settings.BeerSettings;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BeerFitness extends AbstractFitness {
 
     // Stuff used for the flatland problem
     private static BeerWorld beerWorld;
     private static Network ann;
+    private static int maxCorrectPulls = 0;
+    private static List<Integer> numberOfPulls = new ArrayList<>();
 
     /**
      * Setters for the Flatland problem
@@ -32,14 +35,38 @@ public class BeerFitness extends AbstractFitness {
      */
 
     public static void test(EA gen) {
+        // Reset the correct pull
+        maxCorrectPulls = 0;
+
         ArrayList<AbstractGType> children = gen.getChildren();
 
-        // Loop the population
-        for (int i = 0; i < children.size(); i++) {
-            double fitness = calculateFitness(children.get(i));
+        // Check if we should calculate max captures
+        BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
+        if (beerSettings.getMode() == BeerWorld.PULL) {
+            // Reset the list of pull downs
+            numberOfPulls.clear();
 
-            // Set the fitness
-            children.get(i).setFitness(fitness);
+            // Pull special case stuff
+            for (int i = 0; i < children.size(); i++) {
+                double fitness = calculateFitness(children.get(i));
+
+                // Set the fitness
+                children.get(i).setActualFitness(fitness);
+            }
+
+            for (int i = 0; i < children.size(); i++) {
+                double newFitness = children.get(i).getActualFitness() * (numberOfPulls.get(i) / (double) maxCorrectPulls);
+                children.get(i).setFitness(newFitness);
+            }
+        }
+        else {
+            // Just do what we usually does
+            for (int i = 0; i < children.size(); i++) {
+                double fitness = calculateFitness(children.get(i));
+
+                // Set the fitness
+                children.get(i).setFitness(fitness);
+            }
         }
     }
 
@@ -73,18 +100,27 @@ public class BeerFitness extends AbstractFitness {
             double capture = (runner.getCapture() / (double) runner.getOptimalCapture()) * 0.5;
             double avoid = (runner.getAvoidance() / (double) runner.getOptimalAvoidance()) * 0.25;
             double correct = (runner.getCorrect() / (double) runner.getOptimalCorrect()) * 0.25;
-            //return runner.getCorrect() / (double) runner.getOptimalCorrect();
             return capture + avoid + correct;
         }
         else if (beerSetting.getMode() == BeerWorld.NOWRAP) {
             // No-wrap fitness
-            double capture = (runner.getCapture() / (double) runner.getOptimalCapture()) * 0.9;
-            double avoid = (runner.getAvoidance() / (double) runner.getOptimalAvoidance()) * 0.0;
+            double capture = (runner.getCapture() / (double) runner.getOptimalCapture()) * 0.75;
+            double avoid = (runner.getAvoidance() / (double) runner.getOptimalAvoidance()) * 0.25;
             return capture + avoid;
         }
         else {
             // Pull fitness
-            return 0;
+            double capture = runner.getCapture() * 0.5;
+            double avoid = runner.getAvoidance() * 0.5;
+
+            // Add number of pull downs
+            numberOfPulls.add(runner.getCapture());
+
+            if (runner.getCapture() > maxCorrectPulls) {
+                maxCorrectPulls = runner.getCapture();
+            }
+
+            return capture + avoid;
         }
 
     }

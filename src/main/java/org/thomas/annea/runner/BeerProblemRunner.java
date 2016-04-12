@@ -1,9 +1,12 @@
 package org.thomas.annea.runner;
 
 import org.jblas.DoubleMatrix;
+import org.thomas.annea.ann.functions.Argmax;
 import org.thomas.annea.beer.BeerObject;
+import org.thomas.annea.beer.BeerWorld;
 import org.thomas.annea.beer.Tracker;
 import org.thomas.annea.tools.settings.AbstractSettings;
+import org.thomas.annea.tools.settings.BeerSettings;
 
 import java.util.List;
 
@@ -28,6 +31,9 @@ public class BeerProblemRunner extends AbstractProblemRunner {
     private int optimalAvoidance;
     private int capture;
     private int avoidance;
+
+    private int pulls;
+    private int correctPulls;
 
     /**
      * Constructor
@@ -56,6 +62,9 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         optimalAvoidance = 0;
         capture = 0;
         avoidance = 0;
+
+        pulls = 0;
+        correctPulls = 0;
     }
 
     /**
@@ -77,6 +86,9 @@ public class BeerProblemRunner extends AbstractProblemRunner {
 
     @Override
     public boolean runStep() {
+        // Get settings
+        BeerSettings beerSettings = (BeerSettings) settings;
+
         // Check if can run the step at all
         if (timestep == settings.getMaxTimesteps()) {
             // We are done running
@@ -107,13 +119,31 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         // Propagate the sensor values
         DoubleMatrix output = ann.propagate(inputSensors);
 
-        // Move the tracker
-        tracker.move(output);
+        boolean pullDown = false;
+        if (beerSettings.getMode() == BeerWorld.PULL && shouldPull(output)) {
+            // Pull down
+            pullDown = true;
+        }
+        else {
+            // Move the tracker
+            tracker.move(output);
+        }
+
 
         // Check if the current object is outside the world
         if (currentObject != null) {
-            // We already have a current object, lower the object by one
-            currentObject.fall();
+            // We already have a current object, check if we should make it fall or pull all
+            if (pullDown) {
+                // Pull down
+                currentObject.pull();
+
+                // Increase pull down by one
+                pulls++;
+            }
+            else {
+                // Just fall one
+                currentObject.fall();
+            }
         }
 
         // Check if we should check for capture/avoidance/fail
@@ -144,6 +174,11 @@ public class BeerProblemRunner extends AbstractProblemRunner {
 
                         // Set the color
                         tracker.setColor("#3c763d");
+
+                        // If we did a pull down, increase the number of correct pulldowns
+                        if (pullDown) {
+                            correctPulls++;
+                        }
                     }
                     else {
                         // This is wrong
@@ -220,6 +255,20 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         }
 
         return false;
+    }
+
+    private boolean shouldPull(DoubleMatrix matrix) {
+        double max = matrix.get(0, 0);
+        int index = 0;
+
+        for (int i = 1; i < 3; i++) {
+            if (matrix.get(0, i) > max) {
+                max = matrix.get(0, i);
+                index = i;
+            }
+        }
+
+        return index == 2;
     }
 
     /**
@@ -332,5 +381,13 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         }
 
         return optimalCorrect;
+    }
+
+    public int getPulls() {
+        return pulls;
+    }
+
+    public int getCorrectPulls() {
+        return correctPulls;
     }
 }

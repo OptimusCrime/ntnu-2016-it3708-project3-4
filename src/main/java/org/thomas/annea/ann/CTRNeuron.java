@@ -92,12 +92,20 @@ public class CTRNeuron {
         return weights[index];
     }
 
+    public double[] getWeights() {
+        return weights;
+    }
+
     public double getBias() {
         return bias;
     }
 
     public double getOtherWeight(int index) {
         return otherWeights[index];
+    }
+
+    public double[] getOtherWeights() {
+        return otherWeights;
     }
 
     public double getGain() {
