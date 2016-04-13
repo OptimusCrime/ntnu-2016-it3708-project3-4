@@ -122,7 +122,7 @@ public class BeerController extends AbstractController implements Initializable 
         //printStats(solver);
 
         // Propagate input
-        propagateInput(solver);
+        //propagateInput(solver);
 
         // Start the interval
         startInterval();
