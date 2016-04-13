@@ -71,16 +71,12 @@ public class BeerFitness extends AbstractFitness {
         // Check what fitness to apply
         if (beerSetting.getMode() == BeerWorld.STANDARD) {
             // Standard fitness
-            double capture = (runner.getCapture() / (double) runner.getOptimalCapture()) * 0.5;
-            double avoid = (runner.getAvoidance() / (double) runner.getOptimalAvoidance()) * 0.25;
-            double correct = (runner.getCorrect() / (double) runner.getOptimalCorrect()) * 0.25;
-            return capture + avoid + correct;
+            // Pull fitness
+            return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
         }
         else if (beerSetting.getMode() == BeerWorld.NOWRAP) {
             // No-wrap fitness
-            double capture = (runner.getCapture() / (double) runner.getOptimalCapture()) * 0.75;
-            double avoid = (runner.getAvoidance() / (double) runner.getOptimalAvoidance()) * 0.25;
-            return capture + avoid;
+            return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
         }
         else {
             // Pull fitness
