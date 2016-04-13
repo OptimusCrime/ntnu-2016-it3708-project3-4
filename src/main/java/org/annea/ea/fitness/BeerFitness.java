@@ -15,8 +15,6 @@ public class BeerFitness extends AbstractFitness {
     // Stuff used for the flatland problem
     private static BeerWorld beerWorld;
     private static Network ann;
-    private static int maxCorrectPulls = 0;
-    private static List<Integer> numberOfPulls = new ArrayList<>();
 
     /**
      * Setters for the Flatland problem
@@ -35,35 +33,9 @@ public class BeerFitness extends AbstractFitness {
      */
 
     public static void test(EA gen) {
-        // Reset the correct pull
-        maxCorrectPulls = 0;
-
         ArrayList<AbstractGType> children = gen.getChildren();
-        /*
-        // Check if we should calculate max captures
-        BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
-        if (beerSettings.getMode() == BeerWorld.PULL) {
-            // Reset the list of pull downs
-            numberOfPulls.clear();
 
-            // Pull special case stuff
-            for (int i = 0; i < children.size(); i++) {
-                double fitness = calculateFitness(children.get(i));
-
-                // Set the fitness
-                children.get(i).setActualFitness(fitness);
-            }
-
-            for (int i = 0; i < children.size(); i++) {
-                double newFitness = children.get(i).getActualFitness() * (numberOfPulls.get(i) / (double) maxCorrectPulls);
-                children.get(i).setFitness(newFitness);
-            }
-        }
-        else {
-
-        }*/
-
-        // Just do what we usually does
+        // Loop the population
         for (int i = 0; i < children.size(); i++) {
             double fitness = calculateFitness(children.get(i));
 
@@ -111,7 +83,7 @@ public class BeerFitness extends AbstractFitness {
             return capture + avoid;
         }
         else {
-            // Pull
+            // Pull fitness
             return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
         }
     }
