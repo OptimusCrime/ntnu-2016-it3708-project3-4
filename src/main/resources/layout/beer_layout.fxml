@@ -16,20 +16,20 @@
          </children></Pane>
         <Pane prefHeight="600.0" prefWidth="350.0" style="-fx-background-color: #e0e0e0;">
             <children>
-                <Label layoutX="10.0" layoutY="108.0" text="Refresh rate" />
-                <Slider id="sliderRefreshRate" fx:id="sliderRefreshRate" layoutX="140.0" layoutY="108.0" prefHeight="16.0" prefWidth="205.0"/>
-                <Label id="labelRefreshRate" fx:id="labelRefreshRate" layoutX="295.0" layoutY="132.0" text="" />
-                <Label id="labelTimestep" fx:id="labelTimestep" layoutX="45.0" layoutY="163.0" text="1" />
-                <Button id="buttonPlayPause" fx:id="buttonPlayPause" layoutX="140.0" layoutY="160.0" mnemonicParsing="false" onMouseClicked="#buttonPlayPauseClicked" prefHeight="27.0" prefWidth="200.0" text="Pause" />
+                <Label layoutX="10.0" layoutY="14.0" text="Refresh rate" />
+                <Slider id="sliderRefreshRate" fx:id="sliderRefreshRate" layoutX="140.0" layoutY="14.0" prefHeight="16.0" prefWidth="205.0"/>
+                <Label id="labelRefreshRate" fx:id="labelRefreshRate" layoutX="295.0" layoutY="38.0" text="" />
+                <Label id="labelTimestep" fx:id="labelTimestep" layoutX="45.0" layoutY="69.0" text="1" />
+                <Button id="buttonPlayPause" fx:id="buttonPlayPause" layoutX="140.0" layoutY="66.0" mnemonicParsing="false" onMouseClicked="#buttonPlayPauseClicked" prefHeight="27.0" prefWidth="200.0" text="Pause" />
 
-                <Separator layoutX="0.0" layoutY="202.0" prefHeight="4.0" prefWidth="350.0" />
+                <Separator layoutX="0.0" layoutY="108.0" prefHeight="4.0" prefWidth="350.0" />
 
-                <Label layoutX="10.0" layoutY="216.0" text="Capture:" />
-                <Label id="labelCapture" fx:id="labelCapture" layoutX="140.0" layoutY="216.0" text="" />
-                <Label layoutX="10.0" layoutY="247.0" text="Avoidance:" />
-                <Label id="labelAvoidance" fx:id="labelAvoidance" layoutX="140.0" layoutY="247.0" text="" />
-                <Label layoutX="10.0" layoutY="278.0" text="Correct/Fail:" />
-                <Label id="labelCorrectFail" fx:id="labelCorrectFail" layoutX="140.0" layoutY="278.0" text="" />
+                <Label layoutX="10.0" layoutY="122.0" text="Capture:" />
+                <Label id="labelCapture" fx:id="labelCapture" layoutX="140.0" layoutY="122.0" text="" />
+                <Label layoutX="10.0" layoutY="153.0" text="Avoidance:" />
+                <Label id="labelAvoidance" fx:id="labelAvoidance" layoutX="140.0" layoutY="153.0" text="" />
+                <Label layoutX="10.0" layoutY="184.0" text="Correct/Fail:" />
+                <Label id="labelCorrectFail" fx:id="labelCorrectFail" layoutX="140.0" layoutY="184.0" text="" />
             </children>
         </Pane>
     </children>

@@ -461,14 +461,16 @@ public class BeerController extends AbstractController implements Initializable 
             loadWorld();
             finished = false;
         }
+        else {
+            running = !running;
 
-        running = !running;
-
-        // Update the button text
-        if (running) {
-            buttonPlayPause.setText("Pause");
-        } else {
-            buttonPlayPause.setText("Play");
+            // Update the button text
+            if (running) {
+                buttonPlayPause.setText("Pause");
+            }
+            else {
+                buttonPlayPause.setText("Play");
+            }
         }
     }
 }
