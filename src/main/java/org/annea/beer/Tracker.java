@@ -135,6 +135,17 @@ public class Tracker {
             direction = RIGHT;
         }
 
+        // Direction alternative 2
+        /*if (matrix.get(0, 0) > matrix.get(0, 1)) {
+            direction = LEFT;
+        }
+        else {
+            direction = RIGHT;
+        }*/
+
+        // Magnitude alternative 2
+        //int steps = (int) Math.ceil(Math.abs(matrix.get(0, 0) - matrix.get(0, 1))) * 4;
+
         // Get beer settings
         BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
 

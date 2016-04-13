@@ -1,14 +1,13 @@
 package org.annea.ea.fitness;
 
+import org.annea.ann.Network;
 import org.annea.beer.BeerWorld;
+import org.annea.ea.EA;
 import org.annea.ea.gtype.AbstractGType;
 import org.annea.runner.BeerProblemRunner;
 import org.annea.tools.settings.BeerSettings;
-import org.annea.ann.Network;
-import org.annea.ea.EA;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class BeerFitness extends AbstractFitness {
 
@@ -84,7 +83,7 @@ public class BeerFitness extends AbstractFitness {
         }
         else {
             // Pull fitness
-            return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
+            return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2.01), 0);
         }
     }
 
