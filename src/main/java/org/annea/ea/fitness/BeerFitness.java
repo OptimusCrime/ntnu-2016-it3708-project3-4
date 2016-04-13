@@ -66,7 +66,20 @@ public class BeerFitness extends AbstractFitness {
         runner.runAll();
 
         // Calculate fitness
-        return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
+        // Get BeerSettings
+        BeerSettings beerSetting = (BeerSettings) beerWorld.getSettings();
+
+        // Check what fitness to apply
+        if (beerSetting.getMode() == BeerWorld.NOWRAP) {
+            // No-wrap fitness
+            double capture = (runner.getCapture() / (double) runner.getOptimalCapture()) * 0.75;
+            double avoid = (runner.getAvoidance() / (double) runner.getOptimalAvoidance()) * 0.25;
+            return capture + avoid;
+        }
+        else {
+            // Pull fitness
+            return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
+        }
     }
 
     /**
