@@ -65,23 +65,8 @@ public class BeerFitness extends AbstractFitness {
         // Run the entire scenario
         runner.runAll();
 
-        // Get BeerSettings
-        BeerSettings beerSetting = (BeerSettings) beerWorld.getSettings();
-
-        // Check what fitness to apply
-        if (beerSetting.getMode() == BeerWorld.STANDARD) {
-            // Standard fitness
-            // Pull fitness
-            return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
-        }
-        else if (beerSetting.getMode() == BeerWorld.NOWRAP) {
-            // No-wrap fitness
-            return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
-        }
-        else {
-            // Pull fitness
-            return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
-        }
+        // Calculate fitness
+        return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
     }
 
     /**
