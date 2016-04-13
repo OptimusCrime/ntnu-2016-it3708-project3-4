@@ -1,0 +1,1 @@
+java -classpath "$PWD/target/classes:$HOME/.m2/repository/org/jblas/jblas/1.2.4/jblas-1.2.4.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_60.jdk/Contents/Home/lib/tools.jar" org.annea.BeerMain
