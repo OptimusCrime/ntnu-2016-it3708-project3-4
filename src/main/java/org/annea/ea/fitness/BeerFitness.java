@@ -83,7 +83,8 @@ public class BeerFitness extends AbstractFitness {
         }
         else {
             // Pull fitness
-            return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2.01), 0);
+            double nominator = Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrongPulls(), 2.01), 0) * (runner.getCorrect() - runner.getWrong());
+            return nominator / (Math.pow(runner.getCorrect(), 2) * runner.getCorrect());
         }
     }
 
