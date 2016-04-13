@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.thomas.project3</groupId>
-    <artifactId>project3</artifactId>
+    <groupId>org.annea</groupId>
+    <artifactId>project3-4</artifactId>
     <version>1.0.0</version>
 
     <profiles>
@@ -61,6 +61,7 @@
                 </configuration>
             </plugin>
         </plugins>
+        <outputDirectory>target/classes</outputDirectory>
     </build>
 
 </project>
