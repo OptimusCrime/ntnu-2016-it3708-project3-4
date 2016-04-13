@@ -272,17 +272,17 @@ public class BeerProblemRunner extends AbstractProblemRunner {
     }
 
     private boolean shouldPull(DoubleMatrix matrix) {
-        double max = matrix.get(0, 0);
-        int index = 0;
+        double max = matrix.get(0, 2);
+        /*int index = 0;
 
         for (int i = 1; i < 3; i++) {
             if (matrix.get(0, i) > max) {
                 max = matrix.get(0, i);
                 index = i;
             }
-        }
+        }*/
 
-        return index == 2;
+        return max > 0.55;
     }
 
     /**

@@ -71,7 +71,7 @@ public class BeerController extends AbstractController implements Initializable 
     private ObservableList choiceBoxOptions;
 
     // Length of each tick
-    private static int tickLength = 30;
+    private static int tickLength = 130;
 
     // Reference to the solver
     private AbstractSolver solver;
@@ -269,9 +269,6 @@ public class BeerController extends AbstractController implements Initializable 
         // Get the beer world
         BeerSolver localSolver = (BeerSolver) solver;
         BeerWorld beerWorld = localSolver.getBeerWorld();
-
-        // Generate a new world
-        beerWorld.generate();
 
         // Set up the network
         Network ann = solver.getNetwork();

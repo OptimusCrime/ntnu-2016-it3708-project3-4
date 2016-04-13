@@ -3,8 +3,6 @@ package org.annea.beer;
 import org.annea.tools.RandomHelper;
 import org.annea.tools.settings.AbstractSettings;
 
-import com.sun.tools.javac.util.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,12 +16,6 @@ public class BeerWorld {
     // Reference to the settings
     private AbstractSettings settings;
 
-    // List of all the objects
-    private List<Pair<Integer, Integer>> objects;
-
-    // The location of the tracker
-    private int trackerLocation;
-
     /**
      * Constructor
      * @param s Instance of settings
@@ -31,38 +23,6 @@ public class BeerWorld {
 
     public BeerWorld(AbstractSettings s) {
         settings = s;
-    }
-
-    /**
-     * Create the various locations of the objects and their random sizes
-     */
-
-    public void initialize() {
-        // Create the list that holds all the objects
-        objects = new ArrayList<>();
-
-        // Create each object
-        for (int i = 0; i < 700; i++) {
-            // Get the random size of the object
-            int objectSize = RandomHelper.randint(1, 7);
-
-            // Get the random position of the object
-            int objectLocation = RandomHelper.randint(0, 30 - objectSize);
-
-            // Add the new pair
-            objects.add(new Pair<>(objectSize, objectLocation));
-        }
-
-        // Get the random position of the tracker
-        trackerLocation = RandomHelper.randint(0, 25);
-    }
-
-    /**
-     * Redirect
-     */
-
-    public void generate() {
-        initialize();
     }
 
     public AbstractSettings getSettings() {
@@ -74,16 +34,15 @@ public class BeerWorld {
         List<BeerObject> objectList = new ArrayList<>();
 
         // Loop the objects
-        for (int i = 0; i < objects.size(); i++) {
+        for (int i = 0; i < 600; i++) {
             // Get the pair
-            Pair<Integer, Integer> pair = objects.get(i);
+            int objectSize = RandomHelper.randint(1, 7);
 
-            // Get the values from the pair
-            int size = pair.fst;
-            int location = pair.snd;
+            // Get the random position of the object
+            int objectLocation = RandomHelper.randint(0, 30 - objectSize);
 
             // Create a new object and add to list
-            objectList.add(new BeerObject(this, size, location));
+            objectList.add(new BeerObject(this, objectSize, objectLocation));
         }
 
         // Return the list of objects
@@ -92,6 +51,6 @@ public class BeerWorld {
 
     public Tracker getTracker() {
         // Return the new tracker
-        return new Tracker(this, trackerLocation);
+        return new Tracker(this, RandomHelper.randint(0, 25));
     }
 }

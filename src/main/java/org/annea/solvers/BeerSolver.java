@@ -24,9 +24,6 @@ public class BeerSolver extends AbstractSolver {
         // Create a new flatland
         beerWorld = new BeerWorld(s);
 
-        // Create the flatland world
-        beerWorld.initialize();
-
         // Create a new neural network
         ann = new CTRNetwork(settings);
         ann.create();
@@ -48,18 +45,6 @@ public class BeerSolver extends AbstractSolver {
         for (int i = 0; i < settings.getMaxGenerations(); i++) {
             System.out.println("========= Generation #" + (i + 1) + " =========");
 
-            // Generate a new beerworld
-            beerWorld.generate();
-
-            // Calculate fitness
-            calculateFitness(evoAlg);
-
-            // Do adult selection
-            evoAlg.adultSelection();
-
-            // Do parent selection
-            evoAlg.parentSelection();
-
             // Calculate fitness
             calculateFitness(evoAlg);
 
@@ -73,6 +58,12 @@ public class BeerSolver extends AbstractSolver {
                 // Broadcast the stats
                 observer.fireLog(i, stats[0], stats[1]);
             }
+
+            // Do adult selection
+            evoAlg.adultSelection();
+
+            // Do parent selection
+            evoAlg.parentSelection();
         }
 
         // Store the best individual

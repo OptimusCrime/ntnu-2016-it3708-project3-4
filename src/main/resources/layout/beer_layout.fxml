@@ -17,7 +17,7 @@
         <Pane prefHeight="600.0" prefWidth="350.0" style="-fx-background-color: #e0e0e0;">
             <children>
                 <Label layoutX="10.0" layoutY="108.0" text="Refresh rate" />
-                <Slider id="sliderRefreshRate" fx:id="sliderRefreshRate" layoutX="140.0" layoutY="108.0" prefHeight="16.0" prefWidth="205.0" />
+                <Slider id="sliderRefreshRate" fx:id="sliderRefreshRate" layoutX="140.0" layoutY="108.0" prefHeight="16.0" prefWidth="205.0"/>
                 <Label id="labelRefreshRate" fx:id="labelRefreshRate" layoutX="295.0" layoutY="132.0" text="" />
                 <Label id="labelTimestep" fx:id="labelTimestep" layoutX="45.0" layoutY="163.0" text="1" />
                 <Button id="buttonPlayPause" fx:id="buttonPlayPause" layoutX="140.0" layoutY="160.0" mnemonicParsing="false" onMouseClicked="#buttonPlayPauseClicked" prefHeight="27.0" prefWidth="200.0" text="Pause" />
