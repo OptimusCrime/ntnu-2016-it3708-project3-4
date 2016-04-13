@@ -20,6 +20,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.util.Duration;
 import org.annea.ann.*;
+import org.annea.ea.fitness.BeerFitness;
 import org.annea.runner.BeerProblemRunner;
 import org.annea.tools.settings.BeerSettings;
 import org.jblas.DoubleMatrix;
@@ -80,6 +81,9 @@ public class BeerController extends AbstractController implements Initializable 
 
     // For the timeline
     private Timeline timeline;
+
+    // For replay
+    private boolean finished;
 
     /**
      * Constructor
@@ -275,6 +279,9 @@ public class BeerController extends AbstractController implements Initializable 
         // Get the best runner from the EA
         AbstractGType bestIndividual = solver.getBestIndividual();
 
+        BeerFitness.calculateFitness(bestIndividual);
+        System.out.println("Running Visualisation with fitness: " + bestIndividual.getFitness());
+
         // Apply the weights from the best individual to the ANN
         ann.setWeights(bestIndividual);
 
@@ -307,10 +314,10 @@ public class BeerController extends AbstractController implements Initializable 
             if (!state) {
                 // We are done running, stop the simulation
                 running = false;
+                finished = true;
 
-                // Set button things
-                buttonPlayPause.setDisable(true);
-                buttonPlayPause.setText("Finished");
+                // Set button to replay
+                buttonPlayPause.setText("Restart");
             }
             else {
                 // Update the current tick
@@ -451,6 +458,13 @@ public class BeerController extends AbstractController implements Initializable 
      */
 
     public void togglePausePlay() {
+
+        // Create new random if restart
+        if (finished) {
+            loadWorld();
+            finished = false;
+        }
+
         running = !running;
 
         // Update the button text
