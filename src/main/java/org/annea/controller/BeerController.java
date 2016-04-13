@@ -279,7 +279,7 @@ public class BeerController extends AbstractController implements Initializable 
         // Get the best runner from the EA
         AbstractGType bestIndividual = solver.getBestIndividual();
 
-        BeerFitness.calculateFitness(bestIndividual);
+        bestIndividual.setFitness(BeerFitness.calculateFitness(bestIndividual));
         System.out.println("Running Visualisation with fitness: " + bestIndividual.getFitness());
 
         // Apply the weights from the best individual to the ANN
