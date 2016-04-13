@@ -97,7 +97,7 @@ public class Beer8BitGType extends BinaryGType {
         // Get the F-Type representation
         String PTypeString = "P = " + ptype.toString() + ", ";
 
-        return "#" + id + " - " + fitness;
+        return "#" + id + " - " + PTypeString;
     }
 
 }
