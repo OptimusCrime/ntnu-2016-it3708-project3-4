@@ -39,7 +39,7 @@ public class BeerFitness extends AbstractFitness {
         maxCorrectPulls = 0;
 
         ArrayList<AbstractGType> children = gen.getChildren();
-
+        /*
         // Check if we should calculate max captures
         BeerSettings beerSettings = (BeerSettings) beerWorld.getSettings();
         if (beerSettings.getMode() == BeerWorld.PULL) {
@@ -60,13 +60,15 @@ public class BeerFitness extends AbstractFitness {
             }
         }
         else {
-            // Just do what we usually does
-            for (int i = 0; i < children.size(); i++) {
-                double fitness = calculateFitness(children.get(i));
 
-                // Set the fitness
-                children.get(i).setFitness(fitness);
-            }
+        }*/
+
+        // Just do what we usually does
+        for (int i = 0; i < children.size(); i++) {
+            double fitness = calculateFitness(children.get(i));
+
+            // Set the fitness
+            children.get(i).setFitness(fitness);
         }
     }
 
@@ -109,20 +111,9 @@ public class BeerFitness extends AbstractFitness {
             return capture + avoid;
         }
         else {
-            // Pull fitness
-            double capture = runner.getCapture() * 0.5;
-            double avoid = runner.getAvoidance() * 0.5;
-
-            // Add number of pull downs
-            numberOfPulls.add(runner.getCapture());
-
-            if (runner.getCapture() > maxCorrectPulls) {
-                maxCorrectPulls = runner.getCapture();
-            }
-
-            return capture + avoid;
+            // Pull
+            return Math.max(Math.pow(runner.getCorrect(), 2) - Math.pow(runner.getWrong(), 2), 0);
         }
-
     }
 
     /**

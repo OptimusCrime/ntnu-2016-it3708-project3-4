@@ -34,6 +34,7 @@ public class BeerProblemRunner extends AbstractProblemRunner {
 
     private int pulls;
     private int correctPulls;
+    private int wrongPulls;
 
     /**
      * Constructor
@@ -63,8 +64,10 @@ public class BeerProblemRunner extends AbstractProblemRunner {
         capture = 0;
         avoidance = 0;
 
+        // Pulls
         pulls = 0;
         correctPulls = 0;
+        wrongPulls = 0;
     }
 
     /**
@@ -186,6 +189,10 @@ public class BeerProblemRunner extends AbstractProblemRunner {
 
                         // Set the color
                         tracker.setColor("#a94442");
+
+                        if (pullDown) {
+                            wrongPulls++;
+                        }
                     }
                 }
                 else {
@@ -194,6 +201,10 @@ public class BeerProblemRunner extends AbstractProblemRunner {
 
                     // Set the color
                     tracker.setColor("#a94442");
+
+                    if (pullDown) {
+                        wrongPulls++;
+                    }
                 }
             }
             else {
@@ -204,6 +215,10 @@ public class BeerProblemRunner extends AbstractProblemRunner {
 
                     // Set the color
                     tracker.setColor("#a94442");
+
+                    if (pullDown) {
+                        wrongPulls++;
+                    }
                 }
                 else {
                     // Increase correct too
@@ -389,5 +404,9 @@ public class BeerProblemRunner extends AbstractProblemRunner {
 
     public int getCorrectPulls() {
         return correctPulls;
+    }
+
+    public int getWrongPulls() {
+        return wrongPulls;
     }
 }
