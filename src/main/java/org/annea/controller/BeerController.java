@@ -119,7 +119,10 @@ public class BeerController extends AbstractController implements Initializable 
         solver.solve(null);
 
         // Print stats
-        // printStats(solver);
+        //printStats(solver);
+
+        // Propagate input
+        propagateInput(solver);
 
         // Start the interval
         startInterval();
@@ -166,9 +169,74 @@ public class BeerController extends AbstractController implements Initializable 
                 System.out.println("Time constant: " + timeConstant);
             }
         }
+    }
 
-        System.out.println("-----");
+    private void propagateInput(AbstractSolver solver) {
+        CTRNetwork network = (CTRNetwork) solver.getNetwork();
+        Layer[] layers = network.getLayers();
+        CTRLayer layerOne = (CTRLayer) layers[0];
+        CTRLayer layerTwo = (CTRLayer) layers[1];
+        CTRLayer layerThree = (CTRLayer) layers[2];
 
+        // Layer one
+        List<CTRNeuron> layerOneNeuron = layerOne.getNeurons();
+        layerOneNeuron.get(0).setWeights(new double[]{-3.863, -0.686, 1.549, 2.059, -3.980});
+        layerOneNeuron.get(0).setOtherWeights(new double[]{2.451, -3.196, -3.353});
+        layerOneNeuron.get(0).setBias(-7.176);
+        layerOneNeuron.get(0).setGain(2.475);
+        layerOneNeuron.get(0).setTimeConstant(1.435);
+
+        layerOneNeuron.get(1).setWeights(new double[]{-4.137, 2.451, 3.980, -0.608, -2.843});
+        layerOneNeuron.get(1).setOtherWeights(new double[]{2.059, 1.549, 4.333});
+        layerOneNeuron.get(1).setBias(-0.902);
+        layerOneNeuron.get(1).setGain(4.765);
+        layerOneNeuron.get(1).setTimeConstant(1.349);
+
+        layerOneNeuron.get(2).setWeights(new double[]{2.647, 1.745, -3.941, -1.157, -0.804});
+        layerOneNeuron.get(2).setOtherWeights(new double[]{-2.686, 1.353, 0.882});
+        layerOneNeuron.get(2).setBias(-6.745);
+        layerOneNeuron.get(2).setGain(4.859);
+        layerOneNeuron.get(2).setTimeConstant(1.071);
+
+        // Layer two
+        List<CTRNeuron> layerTwoNeuron = layerTwo.getNeurons();
+        layerTwoNeuron.get(0).setWeights(new double[]{0.647, 2.373, 1.902});
+        layerTwoNeuron.get(0).setOtherWeights(new double[]{3.157, 4.569});
+        layerTwoNeuron.get(0).setBias(-9.608);
+        layerTwoNeuron.get(0).setGain(1.376);
+        layerTwoNeuron.get(0).setTimeConstant(1.682);
+
+        layerTwoNeuron.get(1).setWeights(new double[]{1.314, 3.235, -3.274});
+        layerTwoNeuron.get(1).setOtherWeights(new double[]{-4.098, -2.0196});
+        layerTwoNeuron.get(1).setBias(-0.275);
+        layerTwoNeuron.get(1).setGain(2.961);
+        layerTwoNeuron.get(1).setTimeConstant(1.137);
+
+        // Layer three
+        List<CTRNeuron> layerThreeNeuron = layerThree.getNeurons();
+        layerThreeNeuron.get(0).setWeights(new double[]{1.0, 3.980});
+        layerThreeNeuron.get(0).setOtherWeights(new double[]{-3.980, -0.529});
+        layerThreeNeuron.get(0).setBias(-0.275);
+        layerThreeNeuron.get(0).setGain(1.235);
+        layerThreeNeuron.get(0).setTimeConstant(1.788);
+
+        layerThreeNeuron.get(1).setWeights(new double[]{-4.333, -1.941});
+        layerThreeNeuron.get(1).setOtherWeights(new double[]{-1.0, 4.843});
+        layerThreeNeuron.get(1).setBias(-0.275);
+        layerThreeNeuron.get(1).setGain(-8.706);
+        layerThreeNeuron.get(1).setTimeConstant(1.137);
+
+        DoubleMatrix output1 = network.propagate(new DoubleMatrix(new double[][]{{1, 0, 0, 0, 0}}));
+        DoubleMatrix output2 = network.propagate(new DoubleMatrix(new double[][]{{1, 0, 0, 0, 0}}));
+        DoubleMatrix output3 = network.propagate(new DoubleMatrix(new double[][]{{1, 0, 0, 0, 0}}));
+        DoubleMatrix output4 = network.propagate(new DoubleMatrix(new double[][]{{1, 0, 0, 0, 0}}));
+        DoubleMatrix output5 = network.propagate(new DoubleMatrix(new double[][]{{1, 0, 0, 0, 0}}));
+
+        System.out.println(output1);
+        System.out.println(output2);
+        System.out.println(output3);
+        System.out.println(output4);
+        System.out.println(output5);
     }
 
     /**
