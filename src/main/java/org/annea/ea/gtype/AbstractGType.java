@@ -13,7 +13,6 @@ public abstract class AbstractGType implements Comparable {
 
     // The fitness value
     protected double fitness;
-    protected double actualFitness;
 
     // The P-type for this G-type
     protected AbstractPType ptype;
@@ -115,9 +114,6 @@ public abstract class AbstractGType implements Comparable {
     public double getFitness() {
         return fitness;
     }
-    public double getActualFitness() {
-        return actualFitness;
-    }
     public AbstractPType getPType() {
         return ptype;
     }
@@ -131,9 +127,6 @@ public abstract class AbstractGType implements Comparable {
 
     public void setFitness(double value) {
         fitness = value;
-    }
-    public void setActualFitness(double value) {
-        actualFitness = value;
     }
 
     /**

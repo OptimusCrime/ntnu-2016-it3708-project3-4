@@ -47,15 +47,6 @@ public abstract class AbstractSolver {
             // Calculate fitness
             calculateFitness(evoAlg);
 
-            // Do adult selection
-            evoAlg.adultSelection();
-
-            // Do parent selection
-            evoAlg.parentSelection();
-
-            // Calculate fitness
-            calculateFitness(evoAlg);
-
             // Print stats
             evoAlg.getStats();
 
@@ -66,6 +57,12 @@ public abstract class AbstractSolver {
                 // Broadcast the stats
                 observer.fireLog(i, stats[0], stats[1]);
             }
+
+            // Do adult selection
+            evoAlg.adultSelection();
+
+            // Do parent selection
+            evoAlg.parentSelection();
         }
 
         // Store the best individual

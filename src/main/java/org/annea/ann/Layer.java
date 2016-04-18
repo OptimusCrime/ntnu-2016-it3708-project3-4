@@ -102,7 +102,7 @@ public class Layer {
             }
 
             // Try to fetch the class
-            Class c = Class.forName("org.thomas.annea.ann.functions." + functionClass);
+            Class c = Class.forName("org.annea.ann.functions." + functionClass);
 
             // Check if the class has the correct declared method
             return c.getDeclaredMethod("apply", DoubleMatrix.class, boolean.class);
